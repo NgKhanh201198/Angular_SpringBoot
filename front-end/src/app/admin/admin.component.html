@@ -1,0 +1,21 @@
+<div class="wrapper">
+    <app-navbar></app-navbar>
+    <div class="content-wrapper">
+        <div class="card mt-2 ml-2 mr-2">
+            <h4 class="card-header">Thông tin tài khoản</h4>
+            <div *ngIf="loading" class="ml-3 mt-3 mb-3 spinner-border spinner-border-sm"></div>
+            <div class="card-body" *ngIf="currentUser">
+
+                <p>Tên tài khoản: {{currentUser.username}}</p>
+                <p>Email: {{currentUser.email}}</p>
+                <p>Quyền hạn:</p>
+                <ul *ngFor="let item of currentUser.roles">
+                    <!-- <li class="nav-link" *ngIf="item=='ROLE_ADMIN'">Quản trị viên</li>
+                    <li class="nav-link" *ngIf="item=='ROLE_USER'">Người dùng</li>
+                    <li class="nav-link" *ngIf="item=='ROLE_MODERATOR'">Người điều hành</li> -->
+                    <li class="nav-link">{{(item=="ROLE_ADMIN")?'Quản trị viên':((item=="ROLE_MODERATOR")?'Người điều hành':(item=="ROLE_USER")?'Người dùng':'')}}</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

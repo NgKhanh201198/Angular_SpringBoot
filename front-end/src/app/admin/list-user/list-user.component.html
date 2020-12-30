@@ -1,0 +1,75 @@
+<div class="wrapper">
+    <app-navbar></app-navbar>
+    <div class="content-wrapper">
+        <div class="container">
+            <div>
+                <div class="row">
+                    <div class="col-sm-10">
+                        <h1 class="text-center text-info mt-3 mb-3 my-title">Danh sách tài khoản</h1>
+                    </div>
+                    <div class="col-sm-2">
+                        <a [routerLink]="['/admin','addUser']" class="btn btn-outline-success pr-3 pl-3 mt-3">+Add</a>
+                    </div>
+                </div>
+            </div>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th style="width:5%" scope="col">#</th>
+                        <th style="width:15%" scope="col">User name</th>
+                        <th style="width:20%" scope="col">Email</th>
+                        <th style="width:20%" scope="col">Role</th>
+                        <th style="width:15%" scope="col">
+                            <div class="row">
+                                <div class="col-sm-4">Status</div>
+                                <div class="col-sm-8">
+                                    <mat-select [(value)]="selected" (selectionChange)="change($event.value)">
+                                        <mat-option *ngFor="let status of status" [value]="status.value">{{status.viewValue}} </mat-option>
+                                    </mat-select>
+                                </div>
+                            </div>
+
+                        </th>
+                        <th style="width:10%" scope="col">Active</th>
+                    </tr>
+                </thead>
+                <tbody *ngFor="let item of collectionActive">
+                    <tr *ngIf="active">
+                        <th scope="row">{{item.id}}</th>
+                        <td>{{item.username}}</td>
+                        <td>{{item.email}}</td>
+                        <td>
+                            <ul *ngFor="let role of item.roles">
+                                <p> {{(role.name==Role.ADMIN)?'Quản trị viên':((role.name==Role.MODERATOR)?'Người điều hành':(role.name==Role.USER)?'Người dùng':'')}} </p>
+                                <!-- <p>{{role.name}}</p> -->
+                            </ul>
+                        </td>
+                        <td>{{(item.status)?'Hoạt động':'Không hoạt động'}}</td>
+                        <td>
+                            <a [routerLink]="['/admin','updateUser',item.id]" class="btn-edit btn btn-outline-info mr-2"><i class="fas fa-pen "></i></a>
+                            <a [routerLink]="['/admin','listUser']" *ngIf="(item.username !== 'admin')" (click)="deleteData(item.id)" class="btn-delete btn btn-outline-danger"><i class="fas fa-times"></i></a>
+                        </td>
+                    </tr>
+                </tbody>
+                <tbody *ngFor="let item of collectionInActive">
+                    <tr *ngIf="!active">
+                        <th scope="row">{{item.id}}</th>
+                        <td>{{item.username}}</td>
+                        <td>{{item.email}}</td>
+                        <td>
+                            <ul *ngFor="let role of item.roles">
+                                <p> {{(role.name==Role.ADMIN)?'Quản trị viên':((role.name==Role.MODERATOR)?'Người điều hành':(role.name==Role.USER)?'Người dùng':'')}} </p>
+                            </ul>
+                        </td>
+                        <td>{{item.status?'Không hoạt động':'Không hoạt động'}}</td>
+                        <td>
+                            <a [routerLink]="['/admin','updateUser',item.id]" class="btn-edit btn btn-outline-info mr-2"><i class="fas fa-pen "></i></a>
+                            <a href="" class="btn-delete btn btn-outline-primary"><i class="fas fa-undo-alt"></i></a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div [ngClass]="{ 'hienra': success }" class="alert tb"><i class="fas fa-check" style="color: green; font-size: 1.25em;"></i>&nbsp;{{success}}</div>
+        </div>
+    </div>
+</div>

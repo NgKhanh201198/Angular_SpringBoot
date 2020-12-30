@@ -1,0 +1,26 @@
+<!-- nav -->
+<nav class="navbar navbar-expand navbar-dark flex-column flex-md-row bg-dark" *ngIf="currentUser">
+    <div class="navbar-nav-scroll">
+        <ul class="navbar-nav bd-navbar-nav flex-row">
+            <li class="nav-item">
+                <a class="nav-link active" routerLink="/">Home</a>
+            </li>
+        </ul>
+    </div>
+    <ul class="navbar-nav ml-md-auto">
+        <li class="nav-item">
+            <a class="nav-link" routerLink="/profile">Profile</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" routerLink="/admin" *ngIf="isAdmin">Admin</a>
+        </li>
+        <li class="nav-item">
+            <a style="cursor: pointer;" class="nav-item nav-link" (click)="logout()">Logout</a>
+        </li>
+    </ul>
+</nav>
+
+<!-- main app container -->
+<div>
+    <router-outlet></router-outlet>
+</div>
