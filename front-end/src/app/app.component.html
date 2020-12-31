@@ -1,13 +1,14 @@
 <!-- nav -->
-<nav class="navbar navbar-expand navbar-dark flex-column flex-md-row bg-dark" *ngIf="currentUser">
+<!-- <nav class="navbar navbar-expand navbar-dark flex-column flex-md-row bg-dark" *ngIf="currentUser"> -->
+<nav class="navbar navbar-expand navbar-dark flex-column flex-md-row bg-dark">
     <div class="navbar-nav-scroll">
         <ul class="navbar-nav bd-navbar-nav flex-row">
             <li class="nav-item">
-                <a class="nav-link active" routerLink="/">Home</a>
+                <a style="cursor: pointer;" class="nav-link active" routerLink="/">Home</a>
             </li>
         </ul>
     </div>
-    <ul class="navbar-nav ml-md-auto">
+    <ul class="navbar-nav ml-md-auto" *ngIf="currentUser">
         <li class="nav-item">
             <a class="nav-link" routerLink="/profile">Profile</a>
         </li>
@@ -16,6 +17,14 @@
         </li>
         <li class="nav-item">
             <a style="cursor: pointer;" class="nav-item nav-link" (click)="logout()">Logout</a>
+        </li>
+    </ul>
+    <ul class="navbar-nav ml-md-auto" *ngIf="!currentUser">
+        <li class="nav-item">
+            <a style="cursor: pointer;" class="nav-item nav-link" (click)="logout()">Login</a>
+        </li>
+        <li class="nav-item">
+            <a style="cursor: pointer;" class="nav-item nav-link" routerLink="/register">Register</a>
         </li>
     </ul>
 </nav>

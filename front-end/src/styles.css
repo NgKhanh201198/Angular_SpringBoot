@@ -10,7 +10,7 @@
 .tb {
     position: fixed;
     right: 20px;
-    bottom: 0px;
+    bottom: 10px;
     width: auto;
     background-color: rgb(170 220 170 / 1);
     border: 1px solid rgb(50 220 50 / 1);

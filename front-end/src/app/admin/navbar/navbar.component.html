@@ -14,12 +14,12 @@
                 <img src="../../assets/adminlte/dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
             </div>
             <div class="info" *ngIf="currentUser">
-                <a [routerLink]="['/admin']" class="d-block">{{currentUser.username}}</a>
+                <a [routerLink]="['/profile']" class="d-block">{{currentUser.username}}</a>
             </div>
         </div>
 
         <!-- Sidebar Menu -->
-        <nav class="mt-2">
+        <nav class="mt-2" *ngIf="isAdmin">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                 <li class="nav-item has-treeview menu-open">
                     <a href="#" class="nav-link">
@@ -35,11 +35,11 @@
                                 <p>User</p>
                             </a>
                         </li>
-                        <li class="nav-item">
+                        <!-- <li class="nav-item">
                             <a [routerLink]="['/admin','listBehavior']" class="nav-link">
                                 <p>Behavior</p>
                             </a>
-                        </li>
+                        </li> -->
                     </ul>
                 </li>
             </ul>

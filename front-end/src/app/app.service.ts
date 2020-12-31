@@ -14,6 +14,7 @@ const httpOptions = {
 })
 export class AppService {
     urlUser = `${environment.url}` + 'api/user';
+    urlRestoreUser = `${environment.url}` + 'api/user/restore';
     urlBehavior = `${environment.url}` + 'api/behavior';
     urlAddUser = `${environment.url}` + 'api/auth/register';
 
@@ -43,7 +44,7 @@ export class AppService {
     addUser(data: any): Observable<any> {
         return this.http.post(this.urlAddUser, data, httpOptions)
             .pipe(
-                tap(response => {  }),
+                tap(response => { }),
                 catchError((error) => {
                     return throwError(error);
                 })
@@ -56,6 +57,13 @@ export class AppService {
                 tap(response => { }),
                 catchError(error => of(console.log(error)))
             );
+    }
+
+    restoreUser(id: any): Observable<any> {
+        return this.http.put(`${this.urlRestoreUser}/${id}`, httpOptions).pipe(
+            tap(response => { }),
+            catchError(error => of(console.log(error)))
+        );
     }
 
     //Behaviors

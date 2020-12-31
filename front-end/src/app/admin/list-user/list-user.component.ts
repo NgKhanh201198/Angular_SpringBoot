@@ -65,4 +65,21 @@ export class ListUserComponent implements OnInit {
             this.success = '';
         }, 2500);
     }
+
+    restoreData(id: any) {
+        if (confirm("Do you want to restore this account?")) {
+            this.service.restoreUser(id).subscribe((result: any) => {
+                for (var i = 0; i < this.collectionInActive.length; i++) {
+                    if (this.collectionInActive[i].id === id) {
+                        this.collectionActive.splice(0, 0, this.collectionInActive[i]);
+                        this.collectionInActive.splice(i, 1);
+                    }
+                }
+                this.success = result.message;
+            });
+        }
+        setTimeout(() => {
+            this.success = '';
+        }, 2500);
+    }
 }
