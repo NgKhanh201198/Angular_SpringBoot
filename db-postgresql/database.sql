@@ -50,4 +50,10 @@ ALTER TABLE USER_BEHAVIOR
 INSERT INTO roles(name) VALUES('ROLE_ADMIN');
 INSERT INTO roles(name) VALUES('ROLE_MODERATOR');
 INSERT INTO roles(name) VALUES('ROLE_USER');
-	
+
+INSERT INTO users(username, email, password)
+VALUES('admin','admin@gmail.com','$2a$10$SDXbrlw3FSp9E43yxkmS1emzXrv65AHxwpdVk1DLfxEqq1OxcoaHm');
+
+INSERT INTO user_roles VALUES(1,1);
+INSERT INTO user_roles VALUES(1,2);
+INSERT INTO user_roles VALUES(1,3);
