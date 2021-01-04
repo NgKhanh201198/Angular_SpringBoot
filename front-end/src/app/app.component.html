@@ -31,5 +31,6 @@
 
 <!-- main app container -->
 <div>
-    <router-outlet></router-outlet>
+    <mat-progress-bar *ngIf="show" mode="indeterminate"></mat-progress-bar>
+    <router-outlet *ngIf="!show"></router-outlet>
 </div>

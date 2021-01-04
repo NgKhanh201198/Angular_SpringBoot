@@ -19,7 +19,7 @@ export class HomeComponent implements OnInit {
         private authenticationService: AuthenticationService
     ) {
         this.currentUser = this.authenticationService.currentUserValue;
-    }
+    };
 
     ngOnInit() {
         this.loading = true;
@@ -28,5 +28,5 @@ export class HomeComponent implements OnInit {
             this.userFromApi = this.currentUser;
         }, 800);
 
-    }
+    };
 }

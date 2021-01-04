@@ -1,25 +1,31 @@
 <div class="wrapper">
     <app-navbar></app-navbar>
     <div class="content-wrapper">
-        <div class="container">
+        <div class="container-fluid">
             <div>
                 <div class="row">
-                    <div class="col-sm-10">
+                    <div class="col-sm-8">
                         <h1 class="text-center text-info mt-3 mb-3 my-title">Danh sách tài khoản</h1>
                     </div>
                     <div class="col-sm-2">
                         <a [routerLink]="['/admin','addUser']" class="btn btn-outline-success pr-3 pl-3 mt-3">+Add</a>
+                    </div>
+                    <div class="col-sm-2">
+                        <a [routerLink]="['/admin','listUser']" (click)="deleteAllData()" class="btn-delete btn btn-outline-danger pr-3 pl-3 mt-3">Delete All</a>
                     </div>
                 </div>
             </div>
             <table class="table table-striped">
                 <thead>
                     <tr>
-                        <th style="width:5%" scope="col">#</th>
+                        <th style="width:5%" scope="col">
+                            <mat-checkbox [color]="color" [checked]="allComplete" [indeterminate]="someComplete()" (change)="setAll($event.checked)"></mat-checkbox>
+                        </th>
+                        <!-- <th style="width:5%" scope="col">#</th> -->
                         <th style="width:15%" scope="col">User name</th>
                         <th style="width:15%" scope="col">Email</th>
                         <th style="width:15%" scope="col">Role</th>
-                        <th style="width:15%" scope="col">Creator</th>
+                        <th style="width:10%" scope="col">Creator</th>
                         <th style="width:15%" scope="col">
                             <div class="row">
                                 <div class="col-sm-4">Status</div>
@@ -36,13 +42,15 @@
                 </thead>
                 <tbody *ngFor="let item of collectionActive">
                     <tr *ngIf="active">
-                        <th scope="row">{{item.id}}</th>
+                        <th scope="row">
+                            <mat-checkbox [color]="color" [(ngModel)]="item.isSelected" (ngModelChange)="updateAllComplete()"></mat-checkbox>
+                        </th>
+                        <!-- <th scope="row">{{item.id}}</th> -->
                         <td>{{item.username}}</td>
                         <td>{{item.email}}</td>
                         <td>
                             <ul *ngFor="let role of item.roles">
                                 <p> {{(role.name==Role.ADMIN)?'Quản trị viên':((role.name==Role.MODERATOR)?'Người điều hành':(role.name==Role.USER)?'Người dùng':'')}} </p>
-                                <!-- <p>{{role.name}}</p> -->
                             </ul>
                         </td>
                         <td>{{item.createdBy}}</td>
@@ -55,7 +63,7 @@
                 </tbody>
                 <tbody *ngFor="let item of collectionInActive">
                     <tr *ngIf="!active">
-                        <th scope="row">{{item.id}}</th>
+                        <th scope="row"></th>
                         <td>{{item.username}}</td>
                         <td>{{item.email}}</td>
                         <td>

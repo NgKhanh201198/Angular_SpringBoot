@@ -34,13 +34,6 @@ export class AppService {
         );
     }
 
-    deleteUser(id: any): Observable<any> {
-        return this.http.delete(`${this.urlUser}/${id}`).pipe(
-            tap(response => { }),
-            catchError(error => of(console.log(error)))
-        );
-    }
-
     addUser(data: any): Observable<any> {
         return this.http.post(this.urlAddUser, data, httpOptions)
             .pipe(
@@ -53,6 +46,22 @@ export class AppService {
 
     updateUser(id: any, data: any): Observable<any> {
         return this.http.put(`${this.urlUser}/${id}`, data, httpOptions)
+            .pipe(
+                tap(response => { }),
+                catchError(error => of(console.log(error)))
+            );
+    }
+
+    deleteUserById(id: any): Observable<any> {
+        return this.http.delete(`${this.urlUser}/${id}`)
+            .pipe(
+                tap(response => { }),
+                catchError(error => of(console.log(error)))
+            );
+    }
+
+    deleteMultipleUser(ids: []): Observable<any> {
+        return this.http.put(this.urlUser, ids, httpOptions)
             .pipe(
                 tap(response => { }),
                 catchError(error => of(console.log(error)))

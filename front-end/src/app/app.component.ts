@@ -12,9 +12,13 @@ import { Role } from './_models/role';
 
 export class AppComponent {
     currentUser: CurrentUser;
+    show = false;
 
     constructor(private authenticationService: AuthenticationService, private router: Router) {
         this.authenticationService.currentUser.subscribe(x => { this.currentUser = x });
+        setTimeout(() => {
+            this.show = false;
+        }, 2000);
     }
 
     logout() {
@@ -30,4 +34,5 @@ export class AppComponent {
         }
         return false;
     }
+    
 }
