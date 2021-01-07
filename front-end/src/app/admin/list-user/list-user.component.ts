@@ -9,6 +9,9 @@ interface Status {
     value: string;
     viewValue: string;
 }
+class Position {
+
+}
 class ActiveUser {
     id: number;
     username: string;
@@ -86,7 +89,10 @@ export class ListUserComponent implements OnInit {
         }, 2500);
     };
     deleteAllData() {
-        if (confirm("Do you want to delete these accounts?")) {
+        if (this.listId.length == 0) {
+            alert("You need to select at least one account!");
+        }
+        else if (confirm("Do you want to delete these accounts?")) {
             this.service.deleteMultipleUser(this.listId).subscribe((result: any) => {
                 for (var i = 0; i < this.collectionActive.length; i++) {
                     for (let j = 0; j < this.listId.length; j++) {
@@ -98,10 +104,11 @@ export class ListUserComponent implements OnInit {
                 }
                 this.success = result.message;
             });
-        }
+        };
         setTimeout(() => {
             this.success = '';
         }, 2500);
+
     }
 
     // Khôi phục tài khoản
@@ -116,7 +123,7 @@ export class ListUserComponent implements OnInit {
                 }
                 this.success = result.message;
             });
-        }
+        };
         setTimeout(() => {
             this.success = '';
         }, 2500);

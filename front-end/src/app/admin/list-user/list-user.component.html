@@ -4,21 +4,20 @@
         <div class="container-fluid">
             <div>
                 <div class="row">
-                    <div class="col-sm-8">
+                    <div class="col-sm-9">
                         <h1 class="text-center text-info mt-3 mb-3 my-title">Danh sách tài khoản</h1>
                     </div>
                     <div class="col-sm-2">
-                        <a [routerLink]="['/admin','addUser']" class="btn btn-outline-success pr-3 pl-3 mt-3">+Add</a>
+                        <a matTooltip="create" [matTooltipPosition]="'left'" [routerLink]="['/admin','addUser']" class="btn btn-outline-success mt-3 mr-2"><i class="fas fa-plus"></i></a>
+                        <a matTooltip="delete" [matTooltipPosition]="'right'" *ngIf="active" [routerLink]="['/admin','listUser']" (click)="deleteAllData()" class="btn-delete btn btn-outline-danger mt-3"><i class="fas fa-trash"></i></a>
                     </div>
-                    <div class="col-sm-2">
-                        <a [routerLink]="['/admin','listUser']" (click)="deleteAllData()" class="btn-delete btn btn-outline-danger pr-3 pl-3 mt-3">Delete All</a>
-                    </div>
+                    <div class="col-sm-1"> </div>
                 </div>
             </div>
             <table class="table table-striped">
                 <thead>
                     <tr>
-                        <th style="width:5%" scope="col">
+                        <th style="width:5%" scope="col" *ngIf="active">
                             <mat-checkbox [color]="color" [checked]="allComplete" [indeterminate]="someComplete()" (change)="setAll($event.checked)"></mat-checkbox>
                         </th>
                         <!-- <th style="width:5%" scope="col">#</th> -->
@@ -56,14 +55,13 @@
                         <td>{{item.createdBy}}</td>
                         <td>{{(item.status)?'Hoạt động':'Không hoạt động'}}</td>
                         <td>
-                            <a [routerLink]="['/admin','updateUser',item.id]" class="btn-edit btn btn-outline-info mr-2" matTooltip="update"><i class="fas fa-pen "></i></a>
-                            <a [routerLink]="['/admin','listUser']" *ngIf="(item.username !== 'admin')" (click)="deleteData(item.id)" class="btn-delete btn btn-outline-danger" matTooltip="delete"><i class="fas fa-times"></i></a>
+                            <a [routerLink]="['/admin','updateUser',item.id]" class="btn-edit btn btn-outline-info mr-2" matTooltip="update" [matTooltipPosition]="'left'"><i class="fas fa-pen "></i></a>
+                            <!-- <a [routerLink]="['/admin','listUser']" *ngIf="(item.username !== 'admin')" (click)="deleteData(item.id)" class="btn-delete btn btn-outline-danger" matTooltip="delete"><i class="fas fa-times"></i></a> -->
                         </td>
                     </tr>
                 </tbody>
                 <tbody *ngFor="let item of collectionInActive">
                     <tr *ngIf="!active">
-                        <th scope="row"></th>
                         <td>{{item.username}}</td>
                         <td>{{item.email}}</td>
                         <td>
