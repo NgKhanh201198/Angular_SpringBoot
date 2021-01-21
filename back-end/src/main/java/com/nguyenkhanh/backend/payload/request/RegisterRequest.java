@@ -4,41 +4,44 @@ import java.util.Set;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import com.nguyenkhanh.backend.entity.Common;
+import com.nguyenkhanh.backend.validation.CustomEmailValidate;
 
 public class RegisterRequest extends Common {
-	@NotBlank
-	@Size(min = 3, max = 18, message = "Use 3 to 18 characters or more for your username")
+	@NotBlank(message = "{Custom.UserName.NotBlank}")
+	@Size(min = 3, max = 18, message = "{Custom.Name.Size}")
 	private String username;
 
 	// ----------------------------------------------------------------------------------------------
-	@NotBlank
-	@Size(max = 50)
-	@Email(message = "Invalid email")
+	@NotNull(message = "{Custom.Email.NotBlank}")
+	@CustomEmailValidate(message = "{Custom.Email.Validate}")
+	@Email(message = "{Custom.Email.Validate}")
 	private String email;
 
 	// ----------------------------------------------------------------------------------------------
-	@NotBlank
-	@Size(min = 6, max = 18, message = "Use 6 to 18 characters or more for your password")
+//	@NotBlank(message = "{Custom.Password.NotBlank}")
+	@Size(min = 6, max = 18, message = "{Custom.Password.Size}")
 	private String password;
 
 	// ----------------------------------------------------------------------------------------------
+//	@NotNull(message = "{Custom.Role.NotNull}")
 	private Set<String> roles;
-	private Set<String> behavior;
+	private Set<String> behaviors;
 
 	// ----------------------------------------------------------------------------------------------
 
-	public Set<String> getBehavior() {
-		return behavior;
-	}
-
-	public void setBehavior(Set<String> behavior) {
-		this.behavior = behavior;
-	}
-
 	private boolean status;
+
+	public Set<String> getBehaviors() {
+		return behaviors;
+	}
+
+	public void setBehaviors(Set<String> behaviors) {
+		this.behaviors = behaviors;
+	}
 
 	public String getUsername() {
 		return username;

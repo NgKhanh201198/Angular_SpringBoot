@@ -1,14 +1,21 @@
-package com.nguyenkhanh.backend.dto;
+package com.nguyenkhanh.backend.entity;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 
-public class BehaviorDTO extends CommonDTO<BehaviorDTO> {
+@Entity
+@Table(name = "behaviors")
+public class BehaviorEntity extends Common {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	@NotBlank(message = "{Custom.Name.NotBlank}")
-	@Size(min = 3, max = 18, message = "{Custom.Name.Size}")
 	@Column(name = "name")
 	private String name;
 

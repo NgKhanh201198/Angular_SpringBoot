@@ -37,10 +37,14 @@ export class AppService {
     addUser(data: any): Observable<any> {
         return this.http.post(this.urlAddUser, data, httpOptions)
             .pipe(
-                tap(response => { }),
-                catchError((error) => {
-                    return throwError(error);
-                })
+                tap(response => { console.warn("tap = " + response); })
+                ,
+                // catchError((error) => {
+                //     console.warn("service = "+error);
+
+                //     return throwError(error);
+                // })
+                catchError(error => of(console.log("console = "+error)))
             );
     }
 
