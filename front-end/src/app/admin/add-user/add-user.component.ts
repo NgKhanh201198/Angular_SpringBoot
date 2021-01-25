@@ -83,8 +83,8 @@ export class AddUserComponent {
             .subscribe({
                 next: (result) => {
                     this.loading = false,
-                    this.submitted = false,
-                    this.error = '';
+                        this.submitted = false,
+                        this.error = '';
                     this.myForm.resetForm();
                     this.success = result.message
                 },
