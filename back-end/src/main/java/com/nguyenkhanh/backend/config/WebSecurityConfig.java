@@ -18,6 +18,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.nguyenkhanh.backend.entity.ERole;
 import com.nguyenkhanh.backend.jwt.AuthEntryPointJwt;
 import com.nguyenkhanh.backend.jwt.AuthTokenFilter;
 import com.nguyenkhanh.backend.services.UserDetailsServiceImpl;
@@ -37,9 +38,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		return new AuthTokenFilter();
 	}
 
-	@Override
-	public void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(userDetailsServiceImpl).passwordEncoder(passwordEncoder());
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
 	}
 
 	@Bean
@@ -48,9 +49,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		return super.authenticationManager();
 	}
 
-	@Bean
-	public PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
+	@Override
+	public void configure(AuthenticationManagerBuilder auth) throws Exception {
+		auth.userDetailsService(userDetailsServiceImpl).passwordEncoder(passwordEncoder());
 	}
 
 	List<String> roles = new ArrayList<String>(Arrays.asList("ROLE_USER", "ROLE_MODERATOR", "ROLE_ADMIN"));
@@ -58,12 +59,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.cors().and().csrf().disable()
-			.exceptionHandling().authenticationEntryPoint(authenticationEntryPoint).and()
-			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeRequests()
-			.antMatchers("/api/behavior").permitAll().antMatchers("/api/auth/**").permitAll()
-			.antMatchers("/api/test/all").permitAll().antMatchers("/api/test/user").hasAuthority(roles.get(0))
-			.antMatchers("/api/test/mod").hasAuthority(roles.get(1)).antMatchers("/api/test/**")
-			.hasAuthority(roles.get(2)).anyRequest().authenticated();
+				.exceptionHandling().authenticationEntryPoint(authenticationEntryPoint).and()
+				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+				.authorizeRequests()
+				.antMatchers("/api/auth/**").permitAll()
+				.antMatchers("/api/test/all").permitAll()
+				.antMatchers("/api/**").hasAuthority(ERole.ROLE_ADMIN.toString().toUpperCase()).anyRequest().authenticated();
 
 		// Thêm một lớp Filter kiểm tra jwt
 		http.addFilterBefore(authenticationTokenFilter(), UsernamePasswordAuthenticationFilter.class);

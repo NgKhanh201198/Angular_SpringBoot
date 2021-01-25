@@ -4,23 +4,23 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 import com.nguyenkhanh.backend.dto.BehaviorDTO;
-import com.nguyenkhanh.backend.entity.Behavior;
+import com.nguyenkhanh.backend.entity.BehaviorEntity;
 
 @Component
 public class BehaviorConverter {
-	public BehaviorDTO entityToDTO(Behavior behavior) {
+	public BehaviorDTO entityToDTO(BehaviorEntity behavior) {
 		ModelMapper mapper = new ModelMapper();
 		BehaviorDTO behaviorDTO = mapper.map(behavior, BehaviorDTO.class);
 		return behaviorDTO;
 	}
 
-	public Behavior dtoToEntity(BehaviorDTO behaviorDTO) {
+	public BehaviorEntity dtoToEntity(BehaviorDTO behaviorDTO) {
 		ModelMapper mapper = new ModelMapper();
-		Behavior behavior = mapper.map(behaviorDTO, Behavior.class);
+		BehaviorEntity behavior = mapper.map(behaviorDTO, BehaviorEntity.class);
 		return behavior;
 	}
 
-	public Behavior dtoToEntity(BehaviorDTO behaviorDTO, Behavior oldBehavior) {
+	public BehaviorEntity dtoToEntity(BehaviorDTO behaviorDTO, BehaviorEntity oldBehavior) {
 		oldBehavior.setName(behaviorDTO.getName());
 		return oldBehavior;
 	}

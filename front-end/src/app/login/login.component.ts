@@ -45,20 +45,23 @@ export class LoginComponent implements OnInit {
         }
         this.loading = true;
 
-        return this.authenticationService.login(this.loginForm.value.username, this.loginForm.value.password).pipe(first()).subscribe(
-            {
-                next: () => {
-                    // get return url from route parameters or default to '/'
-                    const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
-                    this.router.navigate([returnUrl]);
-                },
-                error: error => {
-                    console.warn(error);
-                    
-                    this.error = error;
-                    this.loading = false;
+        this.authenticationService.login(this.loginForm.value.username, this.loginForm.value.password)
+            .pipe(first())
+            .subscribe(
+                {
+                    next: () => {
+                        console.log("Success: Login success");
+                        // get return url from route parameters or default to '/'
+                        const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+                        this.router.navigate([returnUrl]);
+                    },
+                    error: (error: any) => {
+                        console.log("Error: ");
+                        console.log(error);
+                        this.error = error;
+                        this.loading = false;
+                    }
                 }
-            }
-        );
+            );
     }
 }

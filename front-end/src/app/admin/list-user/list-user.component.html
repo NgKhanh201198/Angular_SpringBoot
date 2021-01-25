@@ -10,7 +10,7 @@
                     <div class="col-sm-2">
                         <a [routerLink]="['/admin','addUser']" class="btn btn-outline-success pr-3 pl-3 mt-3">+Add</a>
                     </div>
-                    <div class="col-sm-2">
+                    <div class="col-sm-2" *ngIf="active">
                         <a [routerLink]="['/admin','listUser']" (click)="deleteAllData()" class="btn-delete btn btn-outline-danger pr-3 pl-3 mt-3">Delete All</a>
                     </div>
                 </div>
@@ -19,7 +19,7 @@
                 <thead>
                     <tr>
                         <th style="width:5%" scope="col">
-                            <mat-checkbox [color]="color" [checked]="allComplete" [indeterminate]="someComplete()" (change)="setAll($event.checked)"></mat-checkbox>
+                            <mat-checkbox *ngIf="active" [color]="color" [checked]="allComplete" [indeterminate]="someComplete()" (change)="setAll($event.checked)"></mat-checkbox>
                         </th>
                         <!-- <th style="width:5%" scope="col">#</th> -->
                         <th style="width:15%" scope="col">User name</th>

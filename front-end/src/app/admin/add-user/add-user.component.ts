@@ -85,11 +85,10 @@ export class AddUserComponent {
                     this.loading = false,
                     this.submitted = false,
                     this.error = '';
-                    // this.formData.reset();
                     this.myForm.resetForm();
                     this.success = result.message
                 },
-                error: error => {
+                error: (error) => {
                     this.error = error;
                     this.loading = false;
                 }

@@ -1,9 +1,8 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
-import { Observable, of } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators';
-import { throwError } from 'rxjs';
 
 const httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -20,6 +19,12 @@ export class AppService {
 
     constructor(private http: HttpClient) { }
 
+    handleError(error: HttpErrorResponse) {
+        console.log("HttpErrorResponse");
+        console.log(error);
+        return throwError(error);
+    }
+
     // User
     getAllData(): Observable<any> {
         return this.http.get(this.urlUser).pipe(
@@ -29,49 +34,41 @@ export class AppService {
     }
     getDataByID(id: number): Observable<any> {
         return this.http.get(`${this.urlUser}/${id}`).pipe(
-            tap(response => { }),
-            catchError(error => of(console.log(error)))
+            catchError(this.handleError)
         );
     }
 
     addUser(data: any): Observable<any> {
         return this.http.post(this.urlAddUser, data, httpOptions)
             .pipe(
-                tap(response => { }),
-                catchError((error) => {
-                    return throwError(error);
-                })
+                catchError(this.handleError)
             );
     }
 
     updateUser(id: any, data: any): Observable<any> {
         return this.http.put(`${this.urlUser}/${id}`, data, httpOptions)
             .pipe(
-                tap(response => { }),
-                catchError(error => of(console.log(error)))
+                catchError(this.handleError)
             );
     }
 
     deleteUserById(id: any): Observable<any> {
         return this.http.delete(`${this.urlUser}/${id}`)
             .pipe(
-                tap(response => { }),
-                catchError(error => of(console.log(error)))
+                catchError(this.handleError)
             );
     }
 
     deleteMultipleUser(ids: []): Observable<any> {
         return this.http.put(this.urlUser, ids, httpOptions)
             .pipe(
-                tap(response => { }),
-                catchError(error => of(console.log(error)))
+                catchError(this.handleError)
             );
     }
 
     restoreUser(id: any): Observable<any> {
         return this.http.put(`${this.urlRestoreUser}/${id}`, httpOptions).pipe(
-            tap(response => { }),
-            catchError(error => of(console.log(error)))
+            catchError(this.handleError)
         );
     }
 

@@ -8,7 +8,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.nguyenkhanh.backend.entity.User;
+import com.nguyenkhanh.backend.entity.UserEntity;
 import com.nguyenkhanh.backend.repository.UserRepository;
 
 
@@ -20,7 +20,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	@Override
 	@Transactional // rollback lại khi truy vấn trong method này đều bị lỗi
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		User user = userRepository.findByUsername(username)
+		UserEntity user = userRepository.findByUsername(username)
 				.orElseThrow(() -> new UsernameNotFoundException("User not found with user name" + username));
 		return UserDetailsImpl.build(user);
 	}

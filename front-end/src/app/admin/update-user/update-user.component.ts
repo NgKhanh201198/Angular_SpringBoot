@@ -1,5 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { Component } from '@angular/core';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { AppService } from 'src/app/app.service';
 import { Role } from 'src/app/_models/role';
@@ -25,6 +25,7 @@ export class UpdateUserComponent {
     loading: boolean = false;
     submitted: boolean = false;
     success = '';
+    error = '';
 
     rolesList: Roles[] = [
         { name: 'Quản trị viên', value: 'admin' },
@@ -91,14 +92,23 @@ export class UpdateUserComponent {
         return '';
     }
 
-    //Submit Form
     onSubmit() {
         this.submitted = true;
-        return this.appService.updateUser(this.id, this.formUpdateData.value).subscribe((result) => {
-            this.success = result.message;
-        }),
-        setTimeout(() => {
-            this.success = '';
-        }, 3000);
+        return this.appService.updateUser(this.id, this.formUpdateData.value)
+            .subscribe({
+                next: (res) => {
+                    this.success = res.message;
+                    console.log("Response: ");
+                    console.log(res);
+                },
+                error: (err) => {
+                    this.error = err;
+                    console.log("Error: ");
+                    console.log(err);
+                }
+            })
+            , setTimeout(() => {
+                this.success = '';
+            }, 3000);
     }
 }
