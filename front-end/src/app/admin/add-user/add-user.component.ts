@@ -80,21 +80,19 @@ export class AddUserComponent {
 
 
         return this.service.addUser(this.formData.value)
-            .subscribe(
-                {
-                    next: (result) => {
-                        this.loading = false,
-                            this.submitted = false,
-                            this.error = '';
-                        this.myForm.resetForm();
-                        this.success = result.message
-                    },
-                    error: error => {
-                        this.error = error;
-                        this.loading = false;
-                    }
+            .subscribe({
+                next: (result) => {
+                    this.loading = false,
+                        this.submitted = false,
+                        this.error = '';
+                    this.myForm.resetForm();
+                    this.success = result.message
+                },
+                error: (error) => {
+                    this.error = error;
+                    this.loading = false;
                 }
-            ),
+            }),
             setTimeout(() => {
                 this.success = '';
             }, 3000);
