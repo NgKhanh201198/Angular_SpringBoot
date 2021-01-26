@@ -5,7 +5,6 @@ import { AppService } from 'src/app/_services/app.service';
 import { Role } from 'src/app/_models/role';
 import { User } from 'src/app/_models/user';
 import { emailValidator } from 'src/custom/CustomValidator';
-import { Location } from '@angular/common';
 import { LogService } from '../../_services/log.service';
 
 
