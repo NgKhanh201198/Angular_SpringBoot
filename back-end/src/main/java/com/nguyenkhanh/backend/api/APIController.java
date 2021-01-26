@@ -65,11 +65,17 @@ public class APIController {
 	public ResponseEntity<?> getUserById(@Valid @PathVariable("id") long id) {
 		if (userService.isUserExitsById(id) == false) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			MessageResponse message = new MessageResponse(new Date(), HttpStatus.NOT_FOUND.value(), "Not Found",
 					"Not found ID = " + id);
 			return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
 =======
 			throw new EntityNotFoundException("The ID you entered does not exist");
+>>>>>>> working
+=======
+			MessageResponse message = new MessageResponse(new Date(), HttpStatus.NOT_FOUND.value(), "Not Found",
+					"Not found ID = " + id);
+			return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
 >>>>>>> working
 		} else {
 			UserEntity user = userService.userFindById(id);
