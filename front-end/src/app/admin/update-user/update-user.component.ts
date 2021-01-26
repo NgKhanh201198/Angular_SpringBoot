@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { AppService } from 'src/app/app.service';
+import { AppService } from 'src/app/_services/app.service';
 import { Role } from 'src/app/_models/role';
 import { User } from 'src/app/_models/user';
 import { emailValidator } from 'src/custom/CustomValidator';
 import { Location } from '@angular/common';
+import { LogService } from '../../_services/log.service';
 
 
 export interface Roles {
@@ -43,7 +44,7 @@ export class UpdateUserComponent {
         private formBuilder: FormBuilder,
         private route: ActivatedRoute,
         private appService: AppService,
-        private location: Location
+        private logger: LogService
     ) { }
 
     ngOnInit(): void {
@@ -97,14 +98,14 @@ export class UpdateUserComponent {
         return this.appService.updateUser(this.id, this.formUpdateData.value)
             .subscribe({
                 next: (res) => {
+                    this.error = '';
                     this.success = res.message;
-                    console.log("Response: ");
-                    console.log(res);
+                    this.logger.log(this.success);
+                    this.logger.log(res);
                 },
                 error: (err) => {
                     this.error = err;
-                    console.log("Error: ");
-                    console.log(err);
+                    this.logger.logError(err);
                 }
             })
             , setTimeout(() => {

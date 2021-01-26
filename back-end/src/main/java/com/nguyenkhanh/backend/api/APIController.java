@@ -84,6 +84,21 @@ public class APIController {
 				UserEntity user = new UserEntity(registerRequest.getUsername(), registerRequest.getEmail());
 				UserDTO oldUser = userService.userGetOne(id);
 
+				// Kiểmm tra username tồn tại chưa
+				if (userService.isUserExitsByUsername(registerRequest.getUsername())
+						&& !(registerRequest.getUsername().equals(oldUser.getUsername()))) {
+					return ResponseEntity.badRequest()
+							.body(new MessageResponse(new Date(), HttpStatus.BAD_REQUEST.value(), "Bad Request",
+									"Error: Username is exist already! Please try other name!"));
+				}
+				// Kiểmm tra email tồn tại chưa
+				if (userService.isUserExitsByEmail(registerRequest.getEmail())
+						&& !(registerRequest.getEmail().equals(oldUser.getEmail()))) {
+					return ResponseEntity.badRequest()
+							.body(new MessageResponse(new Date(), HttpStatus.BAD_REQUEST.value(), "Bad Request",
+									"Error: Email is exist already! Please try other email!"));
+				}
+
 				// Tạo role
 				Set<String> strRoles = registerRequest.getRoles();
 				Set<RoleEntity> roles = new HashSet<>();

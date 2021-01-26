@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
-import { AppService } from 'src/app/app.service';
-import { Location } from '@angular/common';
+import { AppService } from 'src/app/_services/app.service';
 import { emailValidator } from 'src/custom/CustomValidator';
 import { ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
+import { LogService } from '../_services/log.service';
 
 @Component({
     selector: 'app-register',
@@ -31,7 +31,8 @@ export class RegisterComponent implements OnInit {
     constructor(
         private formBuilder: FormBuilder,
         private service: AppService,
-        private router: Router
+        private router: Router,
+        private logger: LogService
     ) { }
 
     ngOnInit() {
@@ -79,24 +80,26 @@ export class RegisterComponent implements OnInit {
         return this.service.addUser(this.formData.value)
             .subscribe({
                 next: (result) => {
-                    this.loading = false,
-                        this.submitted = false,
-                        this.error = '';
+                    this.loading = false;
+                    this.submitted = false;
+                    this.error = '';
                     this.myForm.resetForm();
-                    this.success = result.message
-                    console.warn(this.success);
-
+                    this.success = result.message;
+                    this.logger.log(result);
                 },
-                error: error => {
+                error: (error) => {
                     this.error = error;
                     this.loading = false;
+                    this.logger.logError(error);
                 }
             }),
             setTimeout(() => {
                 this.success = '';
             }, 3000),
             setTimeout(() => {
-                this.router.navigate(['/login']);
+                if (this.error == '') {
+                    this.router.navigate(['/login']);
+                }
             }, 3000);
     }
 

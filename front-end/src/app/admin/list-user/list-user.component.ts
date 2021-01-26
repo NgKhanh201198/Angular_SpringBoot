@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AppService } from '../../app.service';
+import { AppService } from '../../_services/app.service';
 import { Role } from '../../_models/role';
 import { ThemePalette } from '@angular/material/core';
+import { LogService } from '../../_services/log.service';
 
 
 interface Status {
@@ -50,7 +51,10 @@ export class ListUserComponent implements OnInit {
         }
     };
 
-    constructor(private service: AppService, private router: Router) { };
+    constructor(
+        private service: AppService,
+        private logger: LogService
+    ) { };
 
     ngOnInit(): void {
         this.service.getAllData().subscribe((result: any) => {
@@ -82,12 +86,14 @@ export class ListUserComponent implements OnInit {
                     }
                 }
                 this.success = result.message;
+                this.logger.log(this.success);
             });
         }
         setTimeout(() => {
             this.success = '';
         }, 2500);
     };
+
     deleteAllData() {
         if (this.listId.length == 0) {
             alert("You need to select at least one account!");

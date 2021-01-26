@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { Observable, of, throwError } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators';
+import { LogService } from './log.service';
 
 const httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -17,11 +18,11 @@ export class AppService {
     urlBehavior = `${environment.url}` + 'api/behavior';
     urlAddUser = `${environment.url}` + 'api/auth/register';
 
-    constructor(private http: HttpClient) { }
+    constructor(
+        private http: HttpClient
+    ) { }
 
     handleError(error: HttpErrorResponse) {
-        console.log("HttpErrorResponse");
-        console.log(error);
         return throwError(error);
     }
 

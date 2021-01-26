@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
-import { AppService } from 'src/app/app.service';
+import { AppService } from 'src/app/_services/app.service';
 import { Location } from '@angular/common';
 import { emailValidator } from 'src/custom/CustomValidator';
 import { ViewChild } from '@angular/core';
