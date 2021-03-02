@@ -14,7 +14,7 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 
 import com.google.gson.Gson;
-import com.nguyenkhanh.backend.exception.MessageResponse;
+import com.nguyenkhanh.backend.exception.ResponseMessage;
 
 @Component
 public final class AuthEntryPointJwt implements AuthenticationEntryPoint {
@@ -24,10 +24,10 @@ public final class AuthEntryPointJwt implements AuthenticationEntryPoint {
 	@Override
 	public void commence(HttpServletRequest request, HttpServletResponse response,
 			AuthenticationException authException) throws IOException, ServletException {
-//		try {
+
 		logger.error("Unauthorized error: {}", authException.getMessage());
 
-		MessageResponse error = new MessageResponse();
+		ResponseMessage error = new ResponseMessage();
 		error.setTimestamp(new Date());
 		error.setstatusCode(HttpServletResponse.SC_UNAUTHORIZED);
 		error.setError("Unauthorized");
@@ -41,22 +41,6 @@ public final class AuthEntryPointJwt implements AuthenticationEntryPoint {
 		response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 		response.getWriter().write(errorMessage);
 		response.flushBuffer();
-//		} catch (Forbidden e) {
-//			MessageResponse error = new MessageResponse();
-//			error.setTimestamp(new Date());
-//			error.setstatusCode(HttpServletResponse.SC_FORBIDDEN);
-//			error.setError("Forbidden");
-//			error.setMessage("Invalid Authorization token");
-//			error.setPath(request.getRequestURI());
-//			Gson gson = new Gson();
-//			String errorMessage = gson.toJson(error);
-//
-//			response.resetBuffer();
-//			response.setContentType("application/json");
-//			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-//			response.getWriter().write(errorMessage);
-//			response.flushBuffer();
-//		}
 	}
 
 }

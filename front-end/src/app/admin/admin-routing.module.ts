@@ -4,6 +4,7 @@ import { AddUserComponent } from './add-user/add-user.component';
 import { AdminComponent } from './admin.component';
 import { ListUserComponent } from './list-user/list-user.component';
 import { UpdateUserComponent } from './update-user/update-user.component';
+// import { UploadFileComponent } from './upload-file/upload-file.component';
 
 const routes: Routes = [
     {
@@ -28,6 +29,11 @@ const routes: Routes = [
         redirectTo: '',
         pathMatch: 'full'
     }
+    // ,
+    // {
+    //     path: 'uploadFile',
+    //     component: UploadFileComponent
+    // }
 
 ];
 

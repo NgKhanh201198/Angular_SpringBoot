@@ -29,7 +29,7 @@ import com.nguyenkhanh.backend.entity.BehaviorEntity;
 import com.nguyenkhanh.backend.entity.ERole;
 import com.nguyenkhanh.backend.entity.RoleEntity;
 import com.nguyenkhanh.backend.entity.UserEntity;
-import com.nguyenkhanh.backend.exception.MessageResponse;
+import com.nguyenkhanh.backend.exception.ResponseMessage;
 import com.nguyenkhanh.backend.jwt.JwtTokenUtils;
 import com.nguyenkhanh.backend.payload.request.LoginRequest;
 import com.nguyenkhanh.backend.payload.request.RegisterRequest;
@@ -78,7 +78,7 @@ public class AuthController {
 			// Truy xuất thông tin người dùng đang đặng nhập.
 			UserDetailsImpl userDetailsImpl = (UserDetailsImpl) authentication.getPrincipal();
 			if (userDetailsImpl == null) {
-				return ResponseEntity.badRequest().body(new MessageResponse(new Date(), HttpStatus.BAD_REQUEST.value(),
+				return ResponseEntity.badRequest().body(new ResponseMessage(new Date(), HttpStatus.BAD_REQUEST.value(),
 						"Bad Request", "Error: User not found!"));
 			}
 
@@ -89,7 +89,7 @@ public class AuthController {
 					userDetailsImpl.getEmail(), roles, userDetailsImpl.isEnabled()));
 
 		} catch (AuthenticationException ex) {
-			MessageResponse message = new MessageResponse(new Date(), HttpStatus.UNAUTHORIZED.value(), "Unauthorized",
+			ResponseMessage message = new ResponseMessage(new Date(), HttpStatus.UNAUTHORIZED.value(), "Unauthorized",
 					"Username or password is incorrect.");
 			return new ResponseEntity<>(message, HttpStatus.UNAUTHORIZED);
 		}
@@ -101,17 +101,17 @@ public class AuthController {
 		try {
 			// Kiểmm tra username tồn tại chưa
 			if (userService.isUserExitsByUsername(registerRequest.getUsername())) {
-				return ResponseEntity.badRequest().body(new MessageResponse(new Date(), HttpStatus.BAD_REQUEST.value(),
+				return ResponseEntity.badRequest().body(new ResponseMessage(new Date(), HttpStatus.BAD_REQUEST.value(),
 						"Bad Request", "Error: Username is exist already! Please try other name!"));
 			}
 			// Kiểmm tra email tồn tại chưa
 			if (userService.isUserExitsByEmail(registerRequest.getEmail())) {
-				return ResponseEntity.badRequest().body(new MessageResponse(new Date(), HttpStatus.BAD_REQUEST.value(),
+				return ResponseEntity.badRequest().body(new ResponseMessage(new Date(), HttpStatus.BAD_REQUEST.value(),
 						"Bad Request", "Error: Email is exist already! Please try other email!"));
 			}
 			// Kiểmm tra password
 			if (registerRequest.getPassword() == null) {
-				return ResponseEntity.badRequest().body(new MessageResponse(new Date(), HttpStatus.BAD_REQUEST.value(),
+				return ResponseEntity.badRequest().body(new ResponseMessage(new Date(), HttpStatus.BAD_REQUEST.value(),
 						"Bad Request", "Password mustn't be null value"));
 			}
 
@@ -153,7 +153,7 @@ public class AuthController {
 			} else {
 				for (String element : strBehaviors) {
 					if (!(behaviorService.isBehaviorExistsByName(element))) {
-						return ResponseEntity.badRequest().body(new MessageResponse(new Date(),
+						return ResponseEntity.badRequest().body(new ResponseMessage(new Date(),
 								HttpStatus.BAD_REQUEST.value(), "Bad Request", "Error: Behavior is not found!"));
 					} else {
 						BehaviorEntity behavior = behaviorService.findByName(element)
@@ -172,10 +172,10 @@ public class AuthController {
 
 			userService.save(user);
 			return ResponseEntity
-					.ok(new MessageResponse(new Date(), HttpStatus.OK.value(), "Registered successfully!"));
+					.ok(new ResponseMessage(new Date(), HttpStatus.OK.value(), "Registered successfully!"));
 		} catch (DataAccessException ex) {
 			System.out.println(ex.getLocalizedMessage());
-			return ResponseEntity.badRequest().body(new MessageResponse(new Date(), HttpStatus.BAD_REQUEST.value(),
+			return ResponseEntity.badRequest().body(new ResponseMessage(new Date(), HttpStatus.BAD_REQUEST.value(),
 					"Bad Request", "Account is already in use. Please try other account!"));
 		}
 	}

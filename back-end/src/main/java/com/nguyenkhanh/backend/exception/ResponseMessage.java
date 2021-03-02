@@ -2,14 +2,14 @@ package com.nguyenkhanh.backend.exception;
 
 import java.util.Date;
 
-public class MessageResponse {
+public class ResponseMessage {
 	private Date timestamp;
 	private int statusCode;
 	private String error;
 	private String message;
 	private String path;
 
-	public MessageResponse(Date timestamp, int statusCode, String error, String message, String path) {
+	public ResponseMessage(Date timestamp, int statusCode, String error, String message, String path) {
 		this.timestamp = timestamp;
 		this.statusCode = statusCode;
 		this.error = error;
@@ -17,26 +17,29 @@ public class MessageResponse {
 		this.path = path;
 	}
 
-	public MessageResponse(Date timestamp, int statusCode, String error, String message) {
+	public ResponseMessage(Date timestamp, int statusCode, String error, String message) {
 		this.timestamp = timestamp;
 		this.statusCode = statusCode;
 		this.error = error;
 		this.message = message;
 	}
 
-	public MessageResponse(Date timestamp, String error, String message) {
+	public ResponseMessage(Date timestamp, String error, String message) {
 		this.timestamp = timestamp;
 		this.error = error;
 		this.message = message;
 	}
 
-	public MessageResponse(Date timestamp, int statusCode, String message) {
+	public ResponseMessage(Date timestamp, int statusCode, String message) {
 		this.timestamp = timestamp;
 		this.statusCode = statusCode;
 		this.message = message;
 	}
 
-	public MessageResponse() {
+	public ResponseMessage(String message) {
+		this.message = message;
+	}
+	public ResponseMessage() {
 	}
 
 	public Date getTimestamp() {

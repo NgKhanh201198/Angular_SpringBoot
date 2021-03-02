@@ -7,11 +7,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -31,7 +29,7 @@ import com.nguyenkhanh.backend.entity.BehaviorEntity;
 import com.nguyenkhanh.backend.entity.ERole;
 import com.nguyenkhanh.backend.entity.RoleEntity;
 import com.nguyenkhanh.backend.entity.UserEntity;
-import com.nguyenkhanh.backend.exception.MessageResponse;
+import com.nguyenkhanh.backend.exception.ResponseMessage;
 import com.nguyenkhanh.backend.payload.request.RegisterRequest;
 import com.nguyenkhanh.backend.services.Impl.BehaviorService;
 import com.nguyenkhanh.backend.services.Impl.RoleService;
@@ -64,7 +62,7 @@ public class APIController {
 	@GetMapping("/user/{id}")
 	public ResponseEntity<?> getUserById(@Valid @PathVariable("id") long id) {
 		if (userService.isUserExitsById(id) == false) {
-			MessageResponse message = new MessageResponse(new Date(), HttpStatus.NOT_FOUND.value(), "Not Found",
+			ResponseMessage message = new ResponseMessage(new Date(), HttpStatus.NOT_FOUND.value(), "Not Found",
 					"Not found ID = " + id);
 			return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
 		} else {
@@ -78,7 +76,9 @@ public class APIController {
 			@PathVariable("id") long id) {
 		try {
 			if (userService.isUserExitsById(id) == false) {
-				throw new EntityNotFoundException("The ID you entered does not exist");
+				ResponseMessage message = new ResponseMessage(new Date(), HttpStatus.NOT_FOUND.value(), "Not Found",
+						"Not found ID = " + id);
+				return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
 			} else {
 				// Tạo account
 				UserEntity user = new UserEntity(registerRequest.getUsername(), registerRequest.getEmail());
@@ -87,15 +87,15 @@ public class APIController {
 				// Kiểmm tra username tồn tại chưa
 				if (userService.isUserExitsByUsername(registerRequest.getUsername())
 						&& !(registerRequest.getUsername().equals(oldUser.getUsername()))) {
-					return ResponseEntity.badRequest()
-							.body(new MessageResponse(new Date(), HttpStatus.BAD_REQUEST.value(), "Bad Request",
+					return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+							.body(new ResponseMessage(new Date(), HttpStatus.BAD_REQUEST.value(), "Bad Request",
 									"Error: Username is exist already! Please try other name!"));
 				}
 				// Kiểmm tra email tồn tại chưa
 				if (userService.isUserExitsByEmail(registerRequest.getEmail())
 						&& !(registerRequest.getEmail().equals(oldUser.getEmail()))) {
-					return ResponseEntity.badRequest()
-							.body(new MessageResponse(new Date(), HttpStatus.BAD_REQUEST.value(), "Bad Request",
+					return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+							.body(new ResponseMessage(new Date(), HttpStatus.BAD_REQUEST.value(), "Bad Request",
 									"Error: Email is exist already! Please try other email!"));
 				}
 
@@ -153,12 +153,12 @@ public class APIController {
 
 				userService.save(user);
 
-				return ResponseEntity
-						.ok(new MessageResponse(new Date(), HttpStatus.OK.value(), "Updated successfully!"));
+				return ResponseEntity.status(HttpStatus.OK)
+						.body(new ResponseMessage(new Date(), HttpStatus.OK.value(), "Updated successfully!"));
 			}
-		} catch (DataAccessException ex) {
+		} catch (Exception ex) {
 			System.out.println(ex.getLocalizedMessage());
-			return ResponseEntity.badRequest().body(new MessageResponse(new Date(), HttpStatus.BAD_REQUEST.value(),
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage(new Date(), HttpStatus.BAD_REQUEST.value(),
 					"Bad Request", "Account is already in use. Please try other account!"));
 		}
 
@@ -168,11 +168,10 @@ public class APIController {
 	public ResponseEntity<?> restoreUser(@Valid @PathVariable("id") long id) {
 		try {
 			userService.restore(id);
-			return ResponseEntity.ok(new MessageResponse(new Date(), HttpStatus.OK.value(), "Restore successfully!"));
-		} catch (EntityNotFoundException e) {
-			MessageResponse message = new MessageResponse(new Date(), HttpStatus.NOT_FOUND.value(), "Not Found",
-					"Not found ID = " + id);
-			return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(new Date(), HttpStatus.OK.value(), "Restore successfully!"));
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseMessage(new Date(), HttpStatus.NOT_FOUND.value(), "Not Found",
+					"Not found ID = " + id));
 		}
 	}
 
@@ -180,9 +179,9 @@ public class APIController {
 	public ResponseEntity<?> deleteUser(@Valid @PathVariable("id") long id) {
 		try {
 			userService.delete(id);
-			return ResponseEntity.ok(new MessageResponse(new Date(), HttpStatus.OK.value(), "Deleted successfully!"));
-		} catch (EntityNotFoundException e) {
-			MessageResponse message = new MessageResponse(new Date(), HttpStatus.NOT_FOUND.value(), "Not Found",
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(new Date(), HttpStatus.OK.value(), "Deleted successfully!"));
+		} catch (Exception e) {
+			ResponseMessage message = new ResponseMessage(new Date(), HttpStatus.NOT_FOUND.value(), "Not Found",
 					"Not found ID = " + id);
 			return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
 		}
@@ -192,9 +191,9 @@ public class APIController {
 	public ResponseEntity<?> deleteUsers(@Valid @RequestBody long[] ids) {
 		try {
 			userService.delete(ids);
-			return ResponseEntity.ok(new MessageResponse(new Date(), HttpStatus.OK.value(), "Deleted successfully!"));
-		} catch (EntityNotFoundException e) {
-			MessageResponse message = new MessageResponse(new Date(), HttpStatus.NOT_FOUND.value(), "Not Found",
+			return ResponseEntity.ok(new ResponseMessage(new Date(), HttpStatus.OK.value(), "Deleted successfully!"));
+		} catch (Exception e) {
+			ResponseMessage message = new ResponseMessage(new Date(), HttpStatus.NOT_FOUND.value(), "Not Found",
 					"Not found ID");
 			return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
 		}
@@ -206,8 +205,8 @@ public class APIController {
 		try {
 			List<BehaviorEntity> behaviors = behaviorService.behaviorFindAll();
 			return new ResponseEntity<List<BehaviorEntity>>(behaviors, HttpStatus.OK);
-		} catch (DataAccessException e) {
-			return ResponseEntity.badRequest().body(new MessageResponse(new Date(), HttpStatus.BAD_REQUEST.value(),
+		} catch (Exception e) {
+			return ResponseEntity.badRequest().body(new ResponseMessage(new Date(), HttpStatus.BAD_REQUEST.value(),
 					"Bad Request", "Did not find the data you requested"));
 		}
 	}
@@ -216,14 +215,14 @@ public class APIController {
 	public ResponseEntity<?> create(@Valid @RequestBody BehaviorDTO dto) throws Exception {
 		try {
 			if (behaviorService.isBehaviorExistsByName(dto.getName())) {
-				return ResponseEntity.badRequest().body(new MessageResponse(new Date(), HttpStatus.BAD_REQUEST.value(),
+				return ResponseEntity.badRequest().body(new ResponseMessage(new Date(), HttpStatus.BAD_REQUEST.value(),
 						"Bad Request", "Behavior is exist already! Please try other behavior!!"));
 			}
 			behaviorService.save(dto);
 			return ResponseEntity
-					.ok(new MessageResponse(new Date(), HttpStatus.OK.value(), "Behavior is created successfully!"));
-		} catch (DataAccessException e) {
-			return ResponseEntity.badRequest().body(new MessageResponse(new Date(), HttpStatus.BAD_REQUEST.value(),
+					.ok(new ResponseMessage(new Date(), HttpStatus.OK.value(), "Behavior is created successfully!"));
+		} catch (Exception e) {
+			return ResponseEntity.badRequest().body(new ResponseMessage(new Date(), HttpStatus.BAD_REQUEST.value(),
 					"Bad Request", "Behavior is exist already! Please try other behavior!"));
 		}
 	}
@@ -232,14 +231,14 @@ public class APIController {
 	public ResponseEntity<?> updateBehavior(@Valid @RequestBody BehaviorDTO dto, @PathVariable("id") long id) {
 		try {
 			if (behaviorService.isBehaviorExistsByName(dto.getName())) {
-				return ResponseEntity.badRequest().body(new MessageResponse(new Date(), HttpStatus.BAD_REQUEST.value(),
+				return ResponseEntity.badRequest().body(new ResponseMessage(new Date(), HttpStatus.BAD_REQUEST.value(),
 						"Bad Request", "Error: Behavior is exist already! Please try other behavior!!"));
 			}
 			dto.setId(id);
 			behaviorService.save(dto);
-			return ResponseEntity.ok(new MessageResponse(new Date(), HttpStatus.OK.value(), "Updated successfully!"));
-		} catch (EntityNotFoundException e) {
-			MessageResponse message = new MessageResponse(new Date(), HttpStatus.NOT_FOUND.value(), "Not Found",
+			return ResponseEntity.ok(new ResponseMessage(new Date(), HttpStatus.OK.value(), "Updated successfully!"));
+		} catch (Exception e) {
+			ResponseMessage message = new ResponseMessage(new Date(), HttpStatus.NOT_FOUND.value(), "Not Found",
 					"Not found ID = " + id);
 			return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
 		}
@@ -249,9 +248,9 @@ public class APIController {
 	public ResponseEntity<?> deleteBehavior(@Valid @PathVariable("id") long id) {
 		try {
 			behaviorService.delete(id);
-			return ResponseEntity.ok(new MessageResponse(new Date(), HttpStatus.OK.value(), "Deleted successfully!"));
-		} catch (DataAccessException e) {
-			MessageResponse message = new MessageResponse(new Date(), HttpStatus.NOT_FOUND.value(), "Not Found",
+			return ResponseEntity.ok(new ResponseMessage(new Date(), HttpStatus.OK.value(), "Deleted successfully!"));
+		} catch (Exception e) {
+			ResponseMessage message = new ResponseMessage(new Date(), HttpStatus.NOT_FOUND.value(), "Not Found",
 					"Not found ID = " + id);
 			return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
 		}
@@ -273,14 +272,14 @@ public class APIController {
 					behaviorService.delete(id);
 				} else {
 					String strID = arrID.stream().map(Object::toString).collect(Collectors.joining("-"));
-					MessageResponse message = new MessageResponse(new Date(), HttpStatus.NOT_FOUND.value(), "Not Found",
+					ResponseMessage message = new ResponseMessage(new Date(), HttpStatus.NOT_FOUND.value(), "Not Found",
 							"Not found ID = [" + strID + "]");
 					return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
 				}
 			}
-			return ResponseEntity.ok(new MessageResponse(new Date(), HttpStatus.OK.value(), "Deleted successfully!"));
-		} catch (DataAccessException e) {
-			MessageResponse message = new MessageResponse(new Date(), HttpStatus.NOT_FOUND.value(), "Not Found",
+			return ResponseEntity.ok(new ResponseMessage(new Date(), HttpStatus.OK.value(), "Deleted successfully!"));
+		} catch (Exception e) {
+			ResponseMessage message = new ResponseMessage(new Date(), HttpStatus.NOT_FOUND.value(), "Not Found",
 					"Not found ID");
 			return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
 		}

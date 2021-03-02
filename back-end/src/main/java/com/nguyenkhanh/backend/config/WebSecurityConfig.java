@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -62,9 +63,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.exceptionHandling().authenticationEntryPoint(authenticationEntryPoint).and()
 				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
 				.authorizeRequests()
+				.antMatchers(HttpMethod.GET, "/", "/*.html", "/favicon.ico", "/**/*.html", "/**/*.css", "/**/*.js").permitAll()
 				.antMatchers("/api/auth/**").permitAll()
+				.antMatchers("/upload").permitAll()
+				.antMatchers("/files").permitAll()
+				.antMatchers("/files/**").permitAll()
 				.antMatchers("/api/test/all").permitAll()
-				.antMatchers("/api/**").hasAuthority(ERole.ROLE_ADMIN.toString().toUpperCase()).anyRequest().authenticated();
+				.antMatchers("/api/**").hasAuthority(ERole.ROLE_ADMIN.toString().toUpperCase())
+				.anyRequest().authenticated();
 
 		// Thêm một lớp Filter kiểm tra jwt
 		http.addFilterBefore(authenticationTokenFilter(), UsernamePasswordAuthenticationFilter.class);

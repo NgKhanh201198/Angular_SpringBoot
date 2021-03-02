@@ -44,7 +44,7 @@ import { LogService } from './_services/log.service';
         ListUserComponent,
         UpdateUserComponent,
         RegisterComponent,
-        ProfileComponent,
+        ProfileComponent
     ],
     imports: [
         BrowserModule,

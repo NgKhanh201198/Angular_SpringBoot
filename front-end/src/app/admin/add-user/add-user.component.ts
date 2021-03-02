@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
 import { AppService } from 'src/app/_services/app.service';
-import { Location } from '@angular/common';
 import { emailValidator } from 'src/custom/CustomValidator';
 import { ViewChild } from '@angular/core';
+import { LogService } from '../../_services/log.service';
+import { HttpClient } from '@angular/common/http';
 
 export interface Roles {
     name: string;
@@ -34,7 +35,8 @@ export class AddUserComponent {
     constructor(
         private formBuilder: FormBuilder,
         private service: AppService,
-        private location: Location
+        private logger: LogService,
+        private http: HttpClient
     ) { }
 
     ngOnInit() {
