@@ -32,6 +32,9 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTableModule } from '@angular/material/table';
 import { AppService } from './_services/app.service';
 import { LogService } from './_services/log.service';
+import { UploadFileComponent } from './admin/upload-file/upload-file.component';
+import { JwPaginationModule } from 'jw-angular-pagination';
+import { NgxPaginationModule } from 'ngx-pagination';
 
 @NgModule({
     declarations: [
@@ -44,7 +47,8 @@ import { LogService } from './_services/log.service';
         ListUserComponent,
         UpdateUserComponent,
         RegisterComponent,
-        ProfileComponent
+        ProfileComponent,
+        UploadFileComponent
     ],
     imports: [
         BrowserModule,
@@ -65,7 +69,9 @@ import { LogService } from './_services/log.service';
         MatButtonModule,
         MatTooltipModule,
         MatProgressBarModule,
-        MatTableModule
+        MatTableModule,
+        JwPaginationModule,
+        NgxPaginationModule 
     ],
     providers: [
         AppService,

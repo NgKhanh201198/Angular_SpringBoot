@@ -10,14 +10,14 @@
     </div>
     <ul class="navbar-nav ml-md-auto" *ngIf="currentUser">
         <li class="nav-item">
-            <a class="nav-link" routerLink="/profile">Profile</a>
+            <a class="nav-link" routerLink="/profile" *ngIf="!isAdmin">{{currentUser.username}}</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" routerLink="/admin" *ngIf="isAdmin">Admin</a>
+            <a class="nav-link" routerLink="/admin" *ngIf="isAdmin">{{currentUser.username}}</a>
         </li>
-        <li class="nav-item">
+        <!-- <li class="nav-item">
             <a style="cursor: pointer;" class="nav-item nav-link" (click)="logout()">Logout</a>
-        </li>
+        </li> -->
     </ul>
     <ul class="navbar-nav ml-md-auto" *ngIf="!currentUser">
         <li class="nav-item">

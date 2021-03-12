@@ -33,12 +33,14 @@ public class JwtTokenUtils {
 
 		UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();// xác thực
 
-		return Jwts.builder().setSubject((userPrincipal.getUsername())).setIssuedAt(new Date())
+		return Jwts.builder()
+				.setSubject(userPrincipal.getUsername())
+				.setIssuedAt(new Date())
 				.setExpiration(new Date((new Date()).getTime() + JWT_EXPIRATION))
 				.signWith(SignatureAlgorithm.HS512, JWT_SECRET).compact();
 	}
 
-	// Lấy thông tin user từ jwt
+	// Lấy username từ jwt
 	public String getUsernameFromJWT(String token) {
 		return Jwts.parser().setSigningKey(JWT_SECRET).parseClaimsJws(token).getBody().getSubject();
 	}
@@ -59,7 +61,6 @@ public class JwtTokenUtils {
 		} catch (IllegalArgumentException e) {
 			logger.error("JWT claims string is empty: {}", e.getMessage());
 		}
-
 		return false;
 	}
 

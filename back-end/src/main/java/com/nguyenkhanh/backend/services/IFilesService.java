@@ -11,9 +11,9 @@ public interface IFilesService {
 
 	public void save(MultipartFile file);
 
+	public Stream<Path> loadAll();
+
 	public Resource load(String filename);
 
 	public void deleteAll();
-
-	public Stream<Path> loadAll();
 }

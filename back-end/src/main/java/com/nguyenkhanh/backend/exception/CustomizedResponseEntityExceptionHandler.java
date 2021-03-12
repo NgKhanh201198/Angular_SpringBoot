@@ -1,6 +1,7 @@
 package com.nguyenkhanh.backend.exception;
 
 import java.util.Date;
+import java.util.concurrent.TimeoutException;
 
 import javax.persistence.EntityNotFoundException;
 
@@ -56,6 +57,13 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
 		ResponseMessage message = new ResponseMessage(new Date(), HttpStatus.NOT_FOUND.value(), "Not Found",
 				"Not found ID");
 		return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
+	}
+
+	@ExceptionHandler({ TimeoutException.class })
+	public ResponseEntity<?> handlTimeoutException(TimeoutException exception, WebRequest request) {
+		ResponseMessage message = new ResponseMessage(new Date(), HttpStatus.REQUEST_TIMEOUT.value(), "Request timeout",
+				exception.getMessage());
+		return new ResponseEntity<>(message, HttpStatus.REQUEST_TIMEOUT);
 	}
 
 	// Validate data

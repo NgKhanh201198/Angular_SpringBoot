@@ -9,15 +9,6 @@ a.btn-delete i {
     transform: translateY(2px);
 }
 
-
-/* .example-margin {
-    padding-left: 30px;
-    width: 185px;
-} */
-
-
-/*  */
-
 .example-section {
     margin: 12px 0;
 }
@@ -29,4 +20,8 @@ a.btn-delete i {
 ul {
     list-style-type: none;
     margin-top: 4px;
+}
+
+.status {
+    padding-right: 0;
 }

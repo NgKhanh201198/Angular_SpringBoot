@@ -21,19 +21,9 @@ public class FilesService implements IFilesService {
 	private final Path root = Paths.get("uploads/");
 
 	@Override
-	public void init() {
-		try {
-			if (!(Files.isDirectory(root))) {
-				Files.createDirectory(root);
-			}
-		} catch (IOException e) {
-			throw new RuntimeException("Could not initialize folder for upload!");
-		}
-	}
-
-	@Override
 	public void save(MultipartFile file) {
 		try {
+			// copy(**, uploads\filename)
 			Files.copy(file.getInputStream(), this.root.resolve(file.getOriginalFilename()));
 		} catch (Exception e) {
 			throw new RuntimeException("Could not store the file. Error: " + e.getMessage());
@@ -41,16 +31,34 @@ public class FilesService implements IFilesService {
 	}
 
 	@Override
+	public Stream<Path> loadAll() {
+		try {
+			// Files.walk(folder, index) tìm kiếm các file ở folder nếu index=1, index > 1
+			// sẽ tìm các folder con
+			// Trả về các file có trong folder
+			return Files.walk(this.root, 1).filter(path -> !path.equals(this.root))
+					.map(path -> this.root.relativize(path));
+		} catch (IOException e) {
+			throw new RuntimeException("Could not load the files!");
+		}
+	}
+
+	@Override
 	public Resource load(String filename) {
 		try {
+			// Lấy đường dẫn file từ folder root = uploads
 			Path file = root.resolve(filename).normalize();
+
+			// Lấy đường dẫn file từ ổ đĩa vd:
+			// file:/D:/STUDY/GitRepository/Angular-SpringBoot/back-end/uploads/1.jpg
 			Resource resource = new UrlResource(file.toUri());
 
+			// resource.exists() check tồn tại ko || resource.isReadable() check path tồn
+			// tại ko
 			if (resource.exists() || resource.isReadable()) {
 				return resource;
 			} else {
 				throw new ResourceNotFoundException("File not found " + filename);
-//				throw new RuntimeException("Could not read the file!");
 			}
 		} catch (MalformedURLException e) {
 			throw new RuntimeException("Error: " + e.getMessage());
@@ -63,11 +71,13 @@ public class FilesService implements IFilesService {
 	}
 
 	@Override
-	public Stream<Path> loadAll() {
+	public void init() {
 		try {
-			return Files.walk(this.root, 1).filter(path -> !path.equals(this.root)).map(this.root::relativize);
+			if (!(Files.isDirectory(root))) {
+				Files.createDirectory(root);
+			}
 		} catch (IOException e) {
-			throw new RuntimeException("Could not load the files!");
+			throw new RuntimeException("Could not initialize folder for upload!");
 		}
 	}
 

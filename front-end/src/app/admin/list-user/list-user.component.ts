@@ -4,23 +4,11 @@ import { AppService } from '../../_services/app.service';
 import { Role } from '../../_models/role';
 import { ThemePalette } from '@angular/material/core';
 import { LogService } from '../../_services/log.service';
-
+import { map } from 'rxjs/operators';
 
 interface Status {
     value: string;
     viewValue: string;
-}
-class Position {
-
-}
-class ActiveUser {
-    id: number;
-    username: string;
-    email: string;
-    roles: [];
-    createdBy: string;
-    status: boolean;
-    isSelected: boolean = false;
 }
 @Component({
     selector: 'app-list-user',
@@ -28,15 +16,19 @@ class ActiveUser {
     styleUrls: ['./list-user.component.css']
 })
 export class ListUserComponent implements OnInit {
-    collectionActive: any = [];
-    collectionInActive: any = [];
+    collectionActive: Array<any> = [];
+    collectionInActive: Array<any> = [];
     listId: any = [];
-    activeUser: ActiveUser;
     active = true;
     selected = 'true';
     checked = false;
     Role: any = Role;
     success = '';
+
+    pageActive: number = 1;
+    pageInActive: number = 1;
+    totalLengthActive: any = 0;
+    totalLengthInActive: any = 0;
 
     status: Status[] = [
         { value: 'true', viewValue: 'Active' },
@@ -56,20 +48,16 @@ export class ListUserComponent implements OnInit {
         private logger: LogService
     ) { };
 
-    ngOnInit(): void {
+    ngOnInit() {
         this.service.getAllData().subscribe((result: any) => {
             for (const item of result) {
-                if (item.status == false)
+                if (item.status == false) {
                     this.collectionInActive.push(item);
+                    this.totalLengthInActive += 1;
+                }
                 else {
-                    this.activeUser = new ActiveUser();
-                    this.activeUser.id = item.id;
-                    this.activeUser.username = item.username;
-                    this.activeUser.email = item.email;
-                    this.activeUser.roles = item.roles;
-                    this.activeUser.createdBy = item.createdBy;
-                    this.activeUser.status = item.status;
-                    this.collectionActive.push(this.activeUser);
+                    this.collectionActive.push(item);
+                    this.totalLengthActive += 1;
                 }
             }
         });

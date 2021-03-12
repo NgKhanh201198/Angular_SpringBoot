@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -13,16 +14,19 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nguyenkhanh.backend.entity.BehaviorEntity;
@@ -61,38 +65,9 @@ public class AuthController {
 	@Autowired
 	JwtTokenUtils jwtTokenUtils;
 
-	@PostMapping("/login")
-	public ResponseEntity<?> loginUser(@Valid @RequestBody LoginRequest loginRequest) {
-		try {
-			// Xác thực username password
-			Authentication authentication = authenticationManager.authenticate(
-					new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
-
-			// Set thông tin authentication vào Security Context
-			SecurityContext securityContext = SecurityContextHolder.getContext();
-			securityContext.setAuthentication(authentication);
-
-			// Tạo token
-			String jwt = jwtTokenUtils.generateJwtToken(authentication);
-
-			// Truy xuất thông tin người dùng đang đặng nhập.
-			UserDetailsImpl userDetailsImpl = (UserDetailsImpl) authentication.getPrincipal();
-			if (userDetailsImpl == null) {
-				return ResponseEntity.badRequest().body(new ResponseMessage(new Date(), HttpStatus.BAD_REQUEST.value(),
-						"Bad Request", "Error: User not found!"));
-			}
-
-			List<String> roles = userDetailsImpl.getAuthorities().stream().map(role -> role.getAuthority())
-					.collect(Collectors.toList());
-
-			return ResponseEntity.ok(new JwtResponse(jwt, userDetailsImpl.getId(), userDetailsImpl.getUsername(),
-					userDetailsImpl.getEmail(), roles, userDetailsImpl.isEnabled()));
-
-		} catch (AuthenticationException ex) {
-			ResponseMessage message = new ResponseMessage(new Date(), HttpStatus.UNAUTHORIZED.value(), "Unauthorized",
-					"Username or password is incorrect.");
-			return new ResponseEntity<>(message, HttpStatus.UNAUTHORIZED);
-		}
+	@GetMapping(path = "confirm")
+	public String confirm(@RequestParam("token") String token) throws TimeoutException {
+		return userService.confirmToken(token);
 	}
 
 	@PostMapping("/register")
@@ -168,7 +143,7 @@ public class AuthController {
 
 			user.setBehaviors(behaviors);
 			user.setRoles(roles);
-			user.setStatus(true);
+			user.setStatus(false);
 
 			userService.save(user);
 			return ResponseEntity
@@ -177,6 +152,51 @@ public class AuthController {
 			System.out.println(ex.getLocalizedMessage());
 			return ResponseEntity.badRequest().body(new ResponseMessage(new Date(), HttpStatus.BAD_REQUEST.value(),
 					"Bad Request", "Account is already in use. Please try other account!"));
+		}
+	}
+
+	@PostMapping("/login")
+	public ResponseEntity<?> loginUser(@Valid @RequestBody LoginRequest loginRequest)  {
+		try {
+			// Xác thực username password
+			Authentication authentication = authenticationManager.authenticate(
+					new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+
+			// Set thông tin authentication vào Security Context
+			SecurityContext securityContext = SecurityContextHolder.getContext();
+			securityContext.setAuthentication(authentication);
+
+			// Tạo token
+			String jwt = jwtTokenUtils.generateJwtToken(authentication);
+
+			// Truy xuất thông tin người dùng đang đặng nhập.
+			UserDetailsImpl userDetailsImpl = (UserDetailsImpl) authentication.getPrincipal();
+
+			if (userDetailsImpl == null) {
+				return ResponseEntity.badRequest().body(new ResponseMessage(new Date(), HttpStatus.BAD_REQUEST.value(),
+						"Bad Request", "Error: User not found!"));
+			}
+
+			List<String> roles = userDetailsImpl.getAuthorities().stream().map(role -> role.getAuthority())
+					.collect(Collectors.toList());
+
+			return ResponseEntity.ok(new JwtResponse(jwt, userDetailsImpl.getId(), userDetailsImpl.getUsername(),
+					userDetailsImpl.getEmail(), roles, userDetailsImpl.isEnabled()));
+
+		} 
+//		catch (AuthenticationException ex) {
+//			ResponseMessage message = new ResponseMessage(new Date(), HttpStatus.UNAUTHORIZED.value(), "Unauthorized",
+//					ex.getMessage());
+//			return new ResponseEntity<>(message, HttpStatus.UNAUTHORIZED);
+//		}
+		catch (DisabledException ex) {
+			ResponseMessage message = new ResponseMessage(new Date(), HttpStatus.UNAUTHORIZED.value(), "Unauthorized",
+					"Account is disabled!");
+			return new ResponseEntity<>(message, HttpStatus.UNAUTHORIZED);
+		} catch (BadCredentialsException ex) {
+			ResponseMessage message = new ResponseMessage(new Date(), HttpStatus.UNAUTHORIZED.value(), "Unauthorized",
+					"Username or password is incorrect!");
+			return new ResponseEntity<>(message, HttpStatus.UNAUTHORIZED);
 		}
 	}
 }

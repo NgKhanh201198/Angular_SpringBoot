@@ -10,6 +10,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,6 +23,7 @@ import com.nguyenkhanh.backend.entity.File;
 import com.nguyenkhanh.backend.exception.ResponseMessage;
 import com.nguyenkhanh.backend.services.Impl.FilesService;
 
+@CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
 @RestController
 public class FilesController {
 //	private static final Logger logger = LoggerFactory.getLogger(FilesController.class);
@@ -39,53 +41,36 @@ public class FilesController {
 			return ResponseEntity.status(HttpStatus.OK)
 					.body(new ResponseMessage(new Date(), HttpStatus.OK.value(), message));
 		} catch (Exception e) {
-			message = "Could not upload the file: " + file.getOriginalFilename() + "!";
+			message = "Filename '" + file.getOriginalFilename()
+					+ "' already exists. Please rename the file and try again!";
 			return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage(new Date(),
 					HttpStatus.EXPECTATION_FAILED.value(), "Expectation Failed", message));
 		}
 	}
 
+	@GetMapping("/files/{filename:.+}")
+	public ResponseEntity<Resource> getFile(@PathVariable String filename) {
+		Resource file = storageService.load(filename);
+		return ResponseEntity.ok().contentType(MediaType.parseMediaType("image/jpeg"))
+				.header(HttpHeaders.CONTENT_DISPOSITION, "Content-Disposition: inlines")
+//				.header(HttpHeaders.CONTENT_DISPOSITION, "Content-Disposition: attachment; filename=\"" + file.getFilename() + "\"")
+				.body(file);
+	}
+
 	@GetMapping("/files")
 	public ResponseEntity<List<File>> getListFiles() {
-		List<File> Files = storageService.loadAll().map(path -> {
-			String filename = path.getFileName().toString();
-			String url = MvcUriComponentsBuilder
-					.fromMethodName(FilesController.class, "getFile", path.getFileName().toString()).build().toString();
+		List<File> Files = storageService.loadAll().map(file -> {
+			// get filename
+			String filename = file.getFileName().toString();
 
+			// create URL format: http://localhost:8080/files + filename
+			// fromMethodName(Class<?> controllerType, String methodName, Object... args)
+			String url = MvcUriComponentsBuilder
+					.fromMethodName(FilesController.class, "getFile", file.getFileName().toString()).build().toString();
 			return new File(filename, url);
 		}).collect(Collectors.toList());
 
 		return ResponseEntity.status(HttpStatus.OK).body(Files);
 	}
 
-	@GetMapping("/files/{filename:.+}")
-	public ResponseEntity<Resource> getFile(@PathVariable String filename) {
-		Resource file = storageService.load(filename);
-		return ResponseEntity.ok()
-				.contentType(MediaType.parseMediaType("image/jpeg"))
-				.header(HttpHeaders.CONTENT_DISPOSITION, "Content-Disposition: inlines")
-//				.header(HttpHeaders.CONTENT_DISPOSITION, "Content-Disposition: attachment; filename=\"" + file.getFilename() + "\"")
-				.body(file);
-	}
-
-//	@GetMapping("/files/{filename:.+}")
-//	public ResponseEntity<Resource> getFile(@PathVariable String filename, HttpServletRequest request) {
-//		Resource file = storageService.load(filename);
-//		String contentType = null;
-//		try {
-//			contentType = request.getServletContext().getMimeType(file.getFile().getAbsolutePath());
-//		} catch (IOException ex) {
-//			logger.info("Could not determine file type.");
-//		}
-//		if (contentType == null) {
-//			contentType = "application/octet-stream";
-//		}
-//		
-//		return ResponseEntity.ok().contentType(MediaType.parseMediaType(contentType))
-//				//// dữ liệu sẽ được hiển thị tự động trên dấu nhắc trong trình duyệt.
-//				.header(HttpHeaders.CONTENT_DISPOSITION, "Content-Disposition: inlines")
-//				//// người dùng sẽ nhận được lời nhắc để lưu tệp cục bộ trên đĩa để truy cập tệp
-////				.header(HttpHeaders.CONTENT_DISPOSITION, "Content-Disposition: attachment; filename=\"" + file.getFilename() + "\"")
-//				.body(file);
-//	}
 }

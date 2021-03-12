@@ -158,8 +158,9 @@ public class APIController {
 			}
 		} catch (Exception ex) {
 			System.out.println(ex.getLocalizedMessage());
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage(new Date(), HttpStatus.BAD_REQUEST.value(),
-					"Bad Request", "Account is already in use. Please try other account!"));
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+					.body(new ResponseMessage(new Date(), HttpStatus.BAD_REQUEST.value(), "Bad Request",
+							"Account is already in use. Please try other account!"));
 		}
 
 	}
@@ -167,19 +168,21 @@ public class APIController {
 	@PutMapping("/user/restore/{id}")
 	public ResponseEntity<?> restoreUser(@Valid @PathVariable("id") long id) {
 		try {
-			userService.restore(id);
-			return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(new Date(), HttpStatus.OK.value(), "Restore successfully!"));
+			userService.deleteAndRestore(id);
+			return ResponseEntity.status(HttpStatus.OK)
+					.body(new ResponseMessage(new Date(), HttpStatus.OK.value(), "Restore successfully!"));
 		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseMessage(new Date(), HttpStatus.NOT_FOUND.value(), "Not Found",
-					"Not found ID = " + id));
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+					new ResponseMessage(new Date(), HttpStatus.NOT_FOUND.value(), "Not Found", "Not found ID = " + id));
 		}
 	}
 
 	@DeleteMapping("/user/{id}")
 	public ResponseEntity<?> deleteUser(@Valid @PathVariable("id") long id) {
 		try {
-			userService.delete(id);
-			return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(new Date(), HttpStatus.OK.value(), "Deleted successfully!"));
+			userService.deleteAndRestore(id);
+			return ResponseEntity.status(HttpStatus.OK)
+					.body(new ResponseMessage(new Date(), HttpStatus.OK.value(), "Deleted successfully!"));
 		} catch (Exception e) {
 			ResponseMessage message = new ResponseMessage(new Date(), HttpStatus.NOT_FOUND.value(), "Not Found",
 					"Not found ID = " + id);

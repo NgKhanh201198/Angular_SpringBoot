@@ -8,9 +8,7 @@ import com.nguyenkhanh.backend.entity.UserEntity;
 public interface IUserService {
 	public void delete(long[] id);
 
-	public void delete(long id);
-
-	public void restore(long id);
+	public void deleteAndRestore(long id);
 
 	public void save(UserEntity user);
 

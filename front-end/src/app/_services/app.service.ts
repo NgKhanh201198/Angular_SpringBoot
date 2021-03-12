@@ -1,4 +1,4 @@
-import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders, HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { Observable, of, throwError } from 'rxjs';
@@ -17,6 +17,8 @@ export class AppService {
     urlRestoreUser = `${environment.url}` + 'api/user/restore';
     urlBehavior = `${environment.url}` + 'api/behavior';
     urlAddUser = `${environment.url}` + 'api/auth/register';
+    urlUpload = `${environment.url}` + 'upload';
+    urlGetFiles = `${environment.url}` + 'files';
 
     constructor(
         private http: HttpClient
@@ -26,13 +28,33 @@ export class AppService {
         return throwError(error);
     }
 
+    //Upload Image
+    upload(file: File): Observable<any> {
+        const formData: FormData = new FormData();
+        formData.append('file', file);
+        return this.http.post(this.urlUpload, formData).pipe(
+            tap(response => { }),
+            catchError(this.handleError)
+        );
+    }
+
+    getFiles(): Observable<any> {
+        return this.http.get(this.urlGetFiles).pipe(
+            tap(response => { console.log(response);
+            }),
+            catchError(this.handleError)
+        );
+    }
+
+
     // User
     getAllData(): Observable<any> {
         return this.http.get(this.urlUser).pipe(
             tap(response => { }),
-            catchError(error => of(console.log(error)))
+            catchError(this.handleError)
         );
     }
+
     getDataByID(id: number): Observable<any> {
         return this.http.get(`${this.urlUser}/${id}`).pipe(
             catchError(this.handleError)

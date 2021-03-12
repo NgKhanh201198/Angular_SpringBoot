@@ -24,6 +24,64 @@
     animation: active 3s forwards;
 }
 
+.ngx-pagination a {
+    outline: none !important;
+    padding: .5rem .75rem !important;
+    margin-left: -2px;
+    line-height: 1.25;
+    color: #007bff !important;
+    background-color: #fff;
+    border: 1px solid #dee2e6;
+}
+
+.ngx-pagination .current {
+    outline: none !important;
+    padding: .5rem .75rem !important;
+    margin-left: -2px;
+    line-height: 1.25;
+    background: #2199e8;
+    color: #fefefe;
+    border: 1px solid #dee2e6 !important;
+}
+
+.ngx-pagination .disabled {
+    padding: .5rem .75rem !important;
+    margin-left: -2px;
+    line-height: 1.25;
+    border: 1px solid #dee2e6!important;
+}
+
+.ngx-pagination .disabled:first-child {
+    border-top-left-radius: .25rem;
+    border-bottom-left-radius: .25rem
+}
+
+.ngx-pagination .disabled:last-child {
+    border-top-right-radius: .25rem;
+    border-bottom-right-radius: .25rem
+}
+
+.ng-star-inserted li:first-child a {
+    border-top-left-radius: .25rem;
+    border-bottom-left-radius: .25rem;
+}
+
+.ng-star-inserted li:last-child a {
+    border-top-right-radius: .25rem;
+    border-bottom-right-radius: .25rem;
+}
+
+.ngx-pagination .pagination-previous a::before,
+.ngx-pagination .pagination-previous.disabled::before {
+    content: '◀' !important;
+    transform: translate(180deg);
+}
+
+.ngx-pagination .pagination-next a::after,
+.ngx-pagination .pagination-next.disabled::after {
+    content: '▶' !important;
+}
+
 @keyframes active {
     0% {
         transform: translateX(350px);

@@ -11,16 +11,18 @@ import com.nguyenkhanh.backend.services.Impl.FilesService;
 @SpringBootApplication
 public class BackEndApplication implements CommandLineRunner {
 	@Resource
-	FilesService filesService;
-
-	public static void main(String[] args) {
-		SpringApplication.run(BackEndApplication.class, args);
-	}
+	private FilesService storageService;
 
 	@Override
 	public void run(String... args) throws Exception {
 //		filesService.deleteAll();
-		filesService.init();
+		storageService.init();
+
+//		<===============TEST===============>
+
 	}
 
+	public static void main(String[] args) {
+		SpringApplication.run(BackEndApplication.class, args);
+	}
 }

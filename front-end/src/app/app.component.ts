@@ -3,6 +3,7 @@ import { AuthenticationService } from './_services/authentication.service';
 import { Router } from '@angular/router';
 import { CurrentUser } from './_models/current-user';
 import { Role } from './_models/role';
+import { OnInit } from '@angular/core';
 
 @Component({
     selector: 'app-root',
@@ -10,7 +11,7 @@ import { Role } from './_models/role';
     styleUrls: ['./app.component.css']
 })
 
-export class AppComponent {
+export class AppComponent implements OnInit{
     currentUser: CurrentUser;
     show = false;
 
@@ -19,6 +20,10 @@ export class AppComponent {
         setTimeout(() => {
             this.show = false;
         }, 2000);
+    }
+
+    ngOnInit(): void {
+        this.currentUser = this.authenticationService.currentUserValue;
     }
 
     logout() {

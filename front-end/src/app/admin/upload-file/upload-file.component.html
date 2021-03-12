@@ -1,0 +1,39 @@
+<div class="wrapper">
+    <app-navbar></app-navbar>
+    <div class="content-wrapper" style="background-color: white;">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-sm-12">
+                    <h1 class="text-center text-info mt-3 mb-3 my-title">Upload File</h1>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <form (ngSubmit)="onUpload()">
+                        <div class="row container">
+                            <h4 class="col-sm-12 p-0">Upload Single File</h4>
+                            <input class="border border-primary p-1 col-sm-10" type="file" (change)="onSelectFile($event)">
+                            <button class="btn btn-sm btn-info col-sm-2">Upload</button>
+                            <div class="col-sm-12 p-0 mt-2"><img [src]="imgURL" *ngIf="imgURL" height="200"></div>
+                        </div>
+                        <div *ngIf="error" class="alert alert-danger mt-3 mb-0">{{error}}</div>
+                    </form>
+                </div>
+                <div class="col-sm-12 mt-5">
+                    <h4 class="col-sm-12 p-0">List File</h4>
+                    <div class="row">
+                        <div class="col-sm-3" *ngFor="let iteam of fileList">
+                            <img class="img-fluid" [src]="[iteam.url]" height="250">
+                        </div>
+                        <div class="col-sm-3">
+                            <img class="img-fluid" [src]="[imgURLUpload]" height="250">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div [ngClass]="{ 'hienra': success }" class="alert tb">
+                <i class="fas fa-check" style="color: green; font-size: 1.25em;"></i>&nbsp;Uploaded successfully!
+            </div>
+        </div>
+    </div>
+</div>

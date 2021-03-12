@@ -8,7 +8,7 @@ export class LogService {
 
     log(msg: any) {
         if (this.isLog == true) {
-            console.log("Message: "+JSON.stringify(msg));
+            console.log("Message: " + JSON.stringify(msg));
         } return false;
     }
 
@@ -21,6 +21,12 @@ export class LogService {
     logWarn(msg: any) {
         if (this.isLog == true) {
             console.warn("Warning: " + JSON.stringify(msg));
+        } return false;
+    }
+
+    logData(msg: any) {
+        if (this.isLog == true) {
+            console.log(msg);
         } return false;
     }
 }
