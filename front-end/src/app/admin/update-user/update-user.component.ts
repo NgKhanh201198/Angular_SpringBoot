@@ -106,9 +106,9 @@ export class UpdateUserComponent {
                     this.error = err;
                     this.logger.logError(err);
                 }
-            })
-            , setTimeout(() => {
+            }),
+            setTimeout(() => {
                 this.success = '';
-            }, 3000);
+            }, 2500);
     }
 }

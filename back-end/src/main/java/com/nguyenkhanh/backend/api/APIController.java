@@ -55,9 +55,9 @@ public class APIController {
 //User---------------------------------------------------------------------------------------------------------
 
 	@GetMapping("/search")
-	public ResponseEntity<?> search(@RequestParam("key") String key) {
-		List<UserEntity> users = userService.searchUser(key);
-		return new ResponseEntity<List<UserEntity>>(users, HttpStatus.OK);
+	public ResponseEntity<?> search(@RequestParam(name = "keyword", defaultValue = "") String keyword) {
+		List<UserEntity> users = userService.searchUser(keyword);
+		return ResponseEntity.ok(users);
 	}
 
 	@GetMapping("/user")
@@ -158,7 +158,7 @@ public class APIController {
 				user.setCreateDate(oldUser.getCreateDate());
 				user.setCreatedBy(oldUser.getCreatedBy());
 
-				userService.save(user);
+				userService.update(user);
 
 				return ResponseEntity.status(HttpStatus.OK)
 						.body(new ResponseMessage(new Date(), HttpStatus.OK.value(), "Updated successfully!"));

@@ -27,6 +27,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
 	@Query("UPDATE UserEntity u " + "SET u.status = true " + "WHERE u.email = ?1")
 	int updateStatus(String email);
 
-	@Query("SELECT u FROM UserEntity u WHERE CONCAT(u.username, u.email, u.create_by) LIKE %?1%")
+	@Transactional
+	@Query("SELECT u FROM UserEntity u WHERE CONCAT(u.username, u.email) LIKE LOWER(CONCAT('%', concat(?1),'%'))")
 	public List<UserEntity> search(String keyword);
 }

@@ -13,7 +13,7 @@
             <a class="nav-link" routerLink="/profile" *ngIf="!isAdmin">{{currentUser.username}}</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" routerLink="/admin" *ngIf="isAdmin">{{currentUser.username}}</a>
+            <a class="nav-link" routerLink="/admin" *ngIf="isAdmin">{{currentUser.username | uppercase}}</a>
         </li>
         <!-- <li class="nav-item">
             <a style="cursor: pointer;" class="nav-item nav-link" (click)="logout()">Logout</a>

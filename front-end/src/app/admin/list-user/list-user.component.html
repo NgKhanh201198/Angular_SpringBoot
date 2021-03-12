@@ -27,7 +27,7 @@
                                 <th style="width:15%" scope="col">User name</th>
                                 <th style="width:15%" scope="col">Email</th>
                                 <th style="width:15%" scope="col">Role</th>
-                                <th style="width:10%" scope="col">Creator</th>
+                                <!-- <th style="width:10%" scope="col">Creator</th> -->
                                 <th style="width:15%" scope="col">
                                     <div class="row">
                                         <div class="col-sm-6" class="status">Status</div>
@@ -53,7 +53,7 @@
                                         <p> {{(role.name==Role.ADMIN)?'Quản trị viên':((role.name==Role.MODERATOR)?'Người điều hành':(role.name==Role.USER)?'Người dùng':'')}} </p>
                                     </ul>
                                 </td>
-                                <td>{{item.createdBy}}</td>
+                                <!-- <td>{{item.createdBy}}</td> -->
                                 <td>{{(item.status)?'Hoạt động':'Không hoạt động'}}</td>
                                 <td>
                                     <a [routerLink]="['/admin','updateUser',item.id]" class="btn-edit btn btn-outline-info mr-2" matTooltip="update" [matTooltipPosition]="'left'"><i class="fas fa-pen "></i></a>
@@ -71,7 +71,7 @@
                                         <p> {{(role.name==Role.ADMIN)?'Quản trị viên':((role.name==Role.MODERATOR)?'Người điều hành':(role.name==Role.USER)?'Người dùng':'')}} </p>
                                     </ul>
                                 </td>
-                                <td>{{item.createdBy}}</td>
+                                <!-- <td>{{item.createdBy}}</td> -->
                                 <td>{{item.status?'Không hoạt động':'Không hoạt động'}}</td>
                                 <td>
                                     <a *ngIf="active" [routerLink]="['/admin','updateUser',item.id]" class="btn-edit btn btn-outline-info mr-2" matTooltip="update"><i class="fas fa-pen "></i></a>

@@ -12,6 +12,8 @@ public interface IUserService {
 
 	public void save(UserEntity user);
 
+	public void update(UserEntity user);
+
 	public UserEntity userFindById(long id);
 
 	public UserDTO userGetOne(long id);

@@ -83,6 +83,11 @@ public class UserServiceImpl implements IUserService {
 	}
 
 	@Override
+	public void update(UserEntity user) {
+		userRepository.save(user);
+	}
+
+	@Override
 	public List<UserEntity> userFindAll() {
 		return userRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
 	}
@@ -141,11 +146,11 @@ public class UserServiceImpl implements IUserService {
 	}
 
 	@Override
-	public List<UserEntity> searchUser(String key) {
-		if (key != null) {
-			return userRepository.search(key);
+	public List<UserEntity> searchUser(String keyword) {
+		if (keyword != null) {
+			return userRepository.search(keyword);
 		}
-		return userRepository.findAll();
+		return userRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
 	}
 
 }

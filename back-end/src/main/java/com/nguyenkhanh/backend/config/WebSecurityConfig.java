@@ -68,6 +68,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/upload").permitAll()
 				.antMatchers("/files").permitAll()
 				.antMatchers("/files/**").permitAll()
+				.antMatchers("/api/search*").permitAll()
 				.antMatchers("/api/test/all").permitAll()
 				.antMatchers("/api/**").hasAuthority(ERole.ROLE_ADMIN.toString().toUpperCase())
 				.anyRequest().authenticated();
