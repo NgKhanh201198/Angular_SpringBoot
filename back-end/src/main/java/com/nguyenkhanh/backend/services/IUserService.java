@@ -18,6 +18,8 @@ public interface IUserService {
 
 	public List<UserEntity> userFindAll();
 
+	public List<UserEntity> searchUser(String key);
+
 	public boolean isUserExitsById(long id);
 
 	public boolean isUserExitsByUsername(String username);

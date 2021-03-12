@@ -15,7 +15,7 @@ import com.nguyenkhanh.backend.repository.UserBehaviorRepository;
 import com.nguyenkhanh.backend.services.IBehaviorService;
 
 @Service
-public class BehaviorService implements IBehaviorService {
+public class BehaviorServiceImpl implements IBehaviorService {
 	@Autowired
 	private BehaviorRepository behaviorRepository;
 

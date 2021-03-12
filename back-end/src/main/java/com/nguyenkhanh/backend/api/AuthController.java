@@ -39,22 +39,22 @@ import com.nguyenkhanh.backend.payload.request.LoginRequest;
 import com.nguyenkhanh.backend.payload.request.RegisterRequest;
 import com.nguyenkhanh.backend.payload.response.JwtResponse;
 import com.nguyenkhanh.backend.services.UserDetailsImpl;
-import com.nguyenkhanh.backend.services.Impl.BehaviorService;
-import com.nguyenkhanh.backend.services.Impl.RoleService;
-import com.nguyenkhanh.backend.services.Impl.UserService;
+import com.nguyenkhanh.backend.services.Impl.BehaviorServiceImpl;
+import com.nguyenkhanh.backend.services.Impl.RoleServiceImpl;
+import com.nguyenkhanh.backend.services.Impl.UserServiceImpl;
 
 @CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
 	@Autowired
-	UserService userService;
+	UserServiceImpl userService;
 
 	@Autowired
-	RoleService roleService;
+	RoleServiceImpl roleService;
 
 	@Autowired
-	BehaviorService behaviorService;
+	BehaviorServiceImpl behaviorService;
 
 	@Autowired
 	PasswordEncoder passwordEncoder;

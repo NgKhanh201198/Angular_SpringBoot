@@ -12,7 +12,7 @@ import com.nguyenkhanh.backend.services.IRoleService;
 
 
 @Service
-public class RoleService implements IRoleService {
+public class RoleServiceImpl implements IRoleService {
 	@Autowired
 	RoleRepository roleRepository;
 

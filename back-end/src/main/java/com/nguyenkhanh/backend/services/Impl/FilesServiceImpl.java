@@ -17,7 +17,7 @@ import com.nguyenkhanh.backend.exception.ResourceNotFoundException;
 import com.nguyenkhanh.backend.services.IFilesService;
 
 @Service
-public class FilesService implements IFilesService {
+public class FilesServiceImpl implements IFilesService {
 	private final Path root = Paths.get("uploads/");
 
 	@Override

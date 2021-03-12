@@ -21,7 +21,7 @@ import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBui
 
 import com.nguyenkhanh.backend.entity.File;
 import com.nguyenkhanh.backend.exception.ResponseMessage;
-import com.nguyenkhanh.backend.services.Impl.FilesService;
+import com.nguyenkhanh.backend.services.Impl.FilesServiceImpl;
 
 @CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
 @RestController
@@ -29,7 +29,7 @@ public class FilesController {
 //	private static final Logger logger = LoggerFactory.getLogger(FilesController.class);
 
 	@Autowired
-	FilesService storageService;
+	FilesServiceImpl storageService;
 
 	@PostMapping("/upload")
 	public ResponseEntity<ResponseMessage> uploadFile(@RequestParam("file") MultipartFile file) {

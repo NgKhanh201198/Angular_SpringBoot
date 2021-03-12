@@ -10,7 +10,7 @@ import com.nguyenkhanh.backend.repository.RegisterVerifyRepository;
 import com.nguyenkhanh.backend.services.IRegisterVerifyService;
 
 @Service
-public class RegisterVerifyService implements IRegisterVerifyService {
+public class RegisterVerifyServiceImpl implements IRegisterVerifyService {
 	@Autowired
 	RegisterVerifyRepository registerVerifyRepository;
 

@@ -1,5 +1,6 @@
 package com.nguyenkhanh.backend.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
@@ -25,4 +26,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
 	@Modifying
 	@Query("UPDATE UserEntity u " + "SET u.status = true " + "WHERE u.email = ?1")
 	int updateStatus(String email);
+
+	@Query("SELECT u FROM UserEntity u WHERE CONCAT(u.username, u.email, u.create_by) LIKE %?1%")
+	public List<UserEntity> search(String keyword);
 }

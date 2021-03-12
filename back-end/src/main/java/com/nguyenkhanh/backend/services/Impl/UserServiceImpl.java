@@ -21,7 +21,7 @@ import com.nguyenkhanh.backend.services.IUserService;
 import com.nguyenkhanh.backend.services.SendEmailService;
 
 @Service
-public class UserService implements IUserService {
+public class UserServiceImpl implements IUserService {
 	@Autowired
 	UserConverter userConverter;
 
@@ -32,7 +32,7 @@ public class UserService implements IUserService {
 	SendEmailService sendEmailService;
 
 	@Autowired
-	RegisterVerifyService registerVerifyService;
+	RegisterVerifyServiceImpl registerVerifyService;
 
 	@Override
 	public void delete(long[] ids) {
@@ -138,6 +138,14 @@ public class UserService implements IUserService {
 				+ "\" style=\"display:block;padding:15px 40px;text-decoration:none;font-family:'Segoe UI',Arial,sans-serif;font-weight: 100;background:linear-gradient(90deg,#3a9bed 25%,#235ecf 100%);border-radius:5px;text-transform:uppercase;letter-spacing:5px;color:#ffffff;width:40%;line-height:25px;text-align:center;margin:auto;font-size:18px;\">Verify mail</a>\r\n"
 				+ "        <p style=\"font-family: 'Segoe UI',Arial,sans-serif;font-size: 16px;font-weight: 400;padding-top: 20px;\"><b>Note:</b> Link will expire in 10 minutes!</p>\r\n"
 				+ "</div>";
+	}
+
+	@Override
+	public List<UserEntity> searchUser(String key) {
+		if (key != null) {
+			return userRepository.search(key);
+		}
+		return userRepository.findAll();
 	}
 
 }

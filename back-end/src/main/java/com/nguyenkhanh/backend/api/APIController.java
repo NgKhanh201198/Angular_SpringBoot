@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nguyenkhanh.backend.dto.BehaviorDTO;
@@ -31,27 +32,33 @@ import com.nguyenkhanh.backend.entity.RoleEntity;
 import com.nguyenkhanh.backend.entity.UserEntity;
 import com.nguyenkhanh.backend.exception.ResponseMessage;
 import com.nguyenkhanh.backend.payload.request.RegisterRequest;
-import com.nguyenkhanh.backend.services.Impl.BehaviorService;
-import com.nguyenkhanh.backend.services.Impl.RoleService;
-import com.nguyenkhanh.backend.services.Impl.UserService;
+import com.nguyenkhanh.backend.services.Impl.BehaviorServiceImpl;
+import com.nguyenkhanh.backend.services.Impl.RoleServiceImpl;
+import com.nguyenkhanh.backend.services.Impl.UserServiceImpl;
 
 @CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
 @RestController
 @RequestMapping("/api")
 public class APIController {
 	@Autowired
-	UserService userService;
+	UserServiceImpl userService;
 
 	@Autowired
-	RoleService roleService;
+	RoleServiceImpl roleService;
 
 	@Autowired
-	BehaviorService behaviorService;
+	BehaviorServiceImpl behaviorService;
 
 	@Autowired
 	PasswordEncoder passwordEncoder;
 
 //User---------------------------------------------------------------------------------------------------------
+
+	@GetMapping("/search")
+	public ResponseEntity<?> search(@RequestParam("key") String key) {
+		List<UserEntity> users = userService.searchUser(key);
+		return new ResponseEntity<List<UserEntity>>(users, HttpStatus.OK);
+	}
 
 	@GetMapping("/user")
 	public ResponseEntity<?> getUser() {
