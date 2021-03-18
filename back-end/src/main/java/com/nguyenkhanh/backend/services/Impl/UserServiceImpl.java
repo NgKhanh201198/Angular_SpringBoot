@@ -8,6 +8,7 @@ import java.util.concurrent.TimeoutException;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +34,12 @@ public class UserServiceImpl implements IUserService {
 
 	@Autowired
 	RegisterVerifyServiceImpl registerVerifyService;
+
+	@Value("${email.dateExpiedSeconds}")
+	private long DATE_EXPIED;
+
+	@Value("${system.baseUrl}")
+	private String BASE_URL;
 
 	@Override
 	public void delete(long[] ids) {
@@ -75,10 +82,11 @@ public class UserServiceImpl implements IUserService {
 
 		String token = UUID.randomUUID().toString();
 
-		RegisterVerify registerVerify = new RegisterVerify(user, token, LocalDateTime.now().plusMinutes(10), false);
+		RegisterVerify registerVerify = new RegisterVerify(user, token, LocalDateTime.now().plusSeconds(DATE_EXPIED),
+				false);
 		registerVerifyService.save(registerVerify);
 
-		String link = "http://localhost:8080/api/auth/confirm?token=" + token;
+		String link = BASE_URL + "api/auth/confirm?token=" + token;
 		sendEmailService.sendEMail(user.getEmail(), buildEmail(user.getUsername(), link));
 	}
 
@@ -110,11 +118,20 @@ public class UserServiceImpl implements IUserService {
 
 		RegisterVerify registerVerify = registerVerifyService.getToken(token)
 				.orElseThrow(() -> new ResourceNotFoundException("Token not found"));
-
 		LocalDateTime dateExpied = registerVerify.getDateExpied();
+		String link = BASE_URL + "api/auth/RegisterTokenExpired?token=" + token;
 
-		if (dateExpied.isBefore(LocalDateTime.now())) {
-			throw new TimeoutException("Token is expired");
+		try {
+			if (dateExpied.isBefore(LocalDateTime.now()) && registerVerify.getStatus() == false) {
+				throw new TimeoutException("Your token has expired.");
+			}
+		} catch (TimeoutException e) {
+			return "<body style=\"margin: 0;\">\r\n"
+					+ "    <div style=\"background-color: #212429;width: 100%;height: 663px;\">\r\n"
+					+ "        <div style=\"width: 80%;text-align: center;font-size: 35px;line-height: 78px;letter-spacing: 0.2em;padding-top: 100px;margin: 0 auto;color: #c8cee2;font-family: 'Segoe UI',Arial,sans-serif;text-transform: uppercase;text-shadow: 0px 4px 4px rgb(0 0 0 / 25%);\">"
+					+ e.getMessage() + "</div>\r\n" + "<a href=\"" + link
+					+ "\" style=\"display:block;padding:15px 40px;margin:10px auto;text-decoration:none;font-family:'Segoe UI',Arial,sans-serif;font-weight: 100;background:linear-gradient(90deg,#3a9bed 0%,#235ecf 100%);border-radius:5px;text-transform:uppercase;letter-spacing:5px;color:#ffffff;width: 30%;line-height:25px;text-align:center;font-size:18px;\">Register Token Expired</a>\r\n"
+					+ "    </div>\r\n" + "</body>";
 		}
 
 		if (registerVerifyService.getStatus(token)) {
@@ -134,7 +151,7 @@ public class UserServiceImpl implements IUserService {
 				+ login + "</div>\r\n" + "    </div>\r\n" + "</body>";
 	}
 
-	private String buildEmail(String name, String link) {
+	public String buildEmail(String name, String link) {
 		return "<div style=\"width:60%;padding:20px 60px;margin:auto;background-color:#f1f1f1;\">\r\n"
 				+ "        <p style=\"font-family:'Segoe UI',Arial,sans-serif;font-size: 32px;font-weight: 400;margin: 20px 0px -5px 0px;\">Hello "
 				+ name + ",</p>\r\n"

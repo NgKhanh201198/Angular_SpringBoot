@@ -40,6 +40,7 @@ import com.nguyenkhanh.backend.payload.request.RegisterRequest;
 import com.nguyenkhanh.backend.payload.response.JwtResponse;
 import com.nguyenkhanh.backend.services.UserDetailsImpl;
 import com.nguyenkhanh.backend.services.Impl.BehaviorServiceImpl;
+import com.nguyenkhanh.backend.services.Impl.RegisterVerifyServiceImpl;
 import com.nguyenkhanh.backend.services.Impl.RoleServiceImpl;
 import com.nguyenkhanh.backend.services.Impl.UserServiceImpl;
 
@@ -64,10 +65,18 @@ public class AuthController {
 
 	@Autowired
 	JwtTokenUtils jwtTokenUtils;
+	
+	@Autowired
+	RegisterVerifyServiceImpl registerVerifyServiceImpl;
 
 	@GetMapping(path = "confirm")
 	public String confirm(@RequestParam("token") String token) throws TimeoutException {
 		return userService.confirmToken(token);
+	}
+
+	@GetMapping(path = "RegisterTokenExpired")
+	public String RegisterTokenExpired(@RequestParam("token") String token) {
+		return registerVerifyServiceImpl.updateTokenExpired(token);
 	}
 
 	@PostMapping("/register")
@@ -156,7 +165,7 @@ public class AuthController {
 	}
 
 	@PostMapping("/login")
-	public ResponseEntity<?> loginUser(@Valid @RequestBody LoginRequest loginRequest)  {
+	public ResponseEntity<?> loginUser(@Valid @RequestBody LoginRequest loginRequest) {
 		try {
 			// Xác thực username password
 			Authentication authentication = authenticationManager.authenticate(
@@ -183,7 +192,7 @@ public class AuthController {
 			return ResponseEntity.ok(new JwtResponse(jwt, userDetailsImpl.getId(), userDetailsImpl.getUsername(),
 					userDetailsImpl.getEmail(), roles, userDetailsImpl.isEnabled()));
 
-		} 
+		}
 //		catch (AuthenticationException ex) {
 //			ResponseMessage message = new ResponseMessage(new Date(), HttpStatus.UNAUTHORIZED.value(), "Unauthorized",
 //					ex.getMessage());

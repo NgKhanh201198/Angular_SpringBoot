@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { AdminComponent } from './admin/admin.component';
 import { HomeComponent } from './home/home.component';
 import { LoginComponent } from './login/login.component';
 import { ProfileComponent } from './profile/profile.component';
@@ -18,7 +17,8 @@ const routes: Routes = [
         path: 'admin',
         loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule),
         canActivate: [AuthGuard],
-        data: { roles: [Role.ADMIN, Role.MODERATOR] }//Khi active link => ActivatedRouteSnapshot chứa data roles=[Role.ADMIN]
+        //Khi active link => ActivatedRouteSnapshot chứa data roles=[Role.ADMIN]
+        data: { roles: [Role.ADMIN] }
     },
     {
         path: 'login',

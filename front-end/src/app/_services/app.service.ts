@@ -40,8 +40,7 @@ export class AppService {
 
     getFiles(): Observable<any> {
         return this.http.get(this.urlGetFiles).pipe(
-            tap(response => { console.log(response);
-            }),
+            tap(response => { }),
             catchError(this.handleError)
         );
     }

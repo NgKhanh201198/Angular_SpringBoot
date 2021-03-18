@@ -22,10 +22,10 @@ public class JwtTokenUtils {
 
 	private static final Logger logger = LoggerFactory.getLogger(JwtTokenUtils.class);
 
-	@Value("${demo.app.jwtSecret}")
+	@Value("${jwt.Secret}")
 	private String JWT_SECRET;
 
-	@Value("${demo.app.jwtExpirationMs}")
+	@Value("${jwt.ExpirationMs}")
 	private int JWT_EXPIRATION;
 
 	// Tạo jwt từ thông tin user
