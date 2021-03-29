@@ -31,7 +31,8 @@ public final class AuthEntryPointJwt implements AuthenticationEntryPoint {
 		error.setTimestamp(new Date());
 		error.setstatusCode(HttpServletResponse.SC_UNAUTHORIZED);
 		error.setError("Unauthorized");
-		error.setMessage(authException.getMessage());
+		error.setMessage("Sorry, you need full authentication to access this resource");
+//		error.setMessage(authException.getMessage());
 		error.setPath(request.getRequestURI());
 		Gson gson = new Gson();
 		String errorMessage = gson.toJson(error);

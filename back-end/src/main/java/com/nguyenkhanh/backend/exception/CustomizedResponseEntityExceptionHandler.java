@@ -10,39 +10,30 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-@ControllerAdvice
+@RestControllerAdvice
 public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
 
 	// Default
 	@ExceptionHandler({ Exception.class })
-	public final ResponseEntity<Object> handleAllException(Exception exception, WebRequest request) {
+	public final ResponseEntity<?> handleAllException(Exception exception, WebRequest request) {
 		ResponseMessage message = new ResponseMessage(new Date(), HttpStatus.INTERNAL_SERVER_ERROR.value(),
 				"Internal Server Error", exception.getMessage(), request.getDescription(false));
 		return new ResponseEntity<>(message, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 	@ExceptionHandler({ ResourceNotFoundException.class })
-	public final ResponseEntity<Object> handleResourceNotFoundException(ResourceNotFoundException exception,
+	public final ResponseEntity<?> handleResourceNotFoundException(ResourceNotFoundException exception,
 			WebRequest request) {
 		ResponseMessage message = new ResponseMessage(new Date(), HttpStatus.NOT_FOUND.value(), "Not Found",
 				exception.getMessage(), request.getDescription(false));
 		return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
 	}
-
-//	// Authentication account
-//	@ExceptionHandler(AuthenticationException.class)
-//	public ResponseEntity<Object> handleAuthenticationException(AuthenticationException exception,
-//			HttpServletResponse response, WebRequest request) {
-//		MessageResponse message = new MessageResponse(new Date(), HttpStatus.UNAUTHORIZED.value(), "Unauthorized",
-//				"Username or password is incorrect.", request.getDescription(false));
-//		return new ResponseEntity<>(message, HttpStatus.UNAUTHORIZED);
-//	}
 
 	// Not found entity (getById not found)
 	@ExceptionHandler({ EntityNotFoundException.class })

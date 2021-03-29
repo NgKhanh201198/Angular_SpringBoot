@@ -20,7 +20,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	@Transactional // rollback lại khi truy vấn trong method này đều bị lỗi
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		UserEntity user = userRepository.findByUsername(username)
-				.orElseThrow(() -> new UsernameNotFoundException("User not found with user name" + username));
+				.orElseThrow(() -> new UsernameNotFoundException("User not found with user name: " + username));
 		return UserDetailsImpl.build(user);
 	}
 }

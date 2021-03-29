@@ -17,9 +17,11 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.nguyenkhanh.backend.entity.ERole;
+import com.nguyenkhanh.backend.exception.CustomAccessDeniedHandler;
 import com.nguyenkhanh.backend.jwt.AuthEntryPointJwt;
 import com.nguyenkhanh.backend.jwt.AuthTokenFilter;
 import com.nguyenkhanh.backend.services.UserDetailsServiceImpl;
@@ -50,6 +52,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		return super.authenticationManager();
 	}
 
+	@Bean
+	public AccessDeniedHandler accessDeniedHandler() {
+		return new CustomAccessDeniedHandler();
+	}
+
 	@Override
 	public void configure(AuthenticationManagerBuilder auth) throws Exception {
 		auth.userDetailsService(userDetailsServiceImpl).passwordEncoder(passwordEncoder());
@@ -59,19 +66,20 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.cors().and().csrf().disable()
-				.exceptionHandling().authenticationEntryPoint(authenticationEntryPoint).and()
-				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-				.authorizeRequests()
-				.antMatchers(HttpMethod.GET, "/", "/*.html", "/favicon.ico", "/**/*.html", "/**/*.css", "/**/*.js").permitAll()
-				.antMatchers("/api/auth/**").permitAll()
-				.antMatchers("/upload").permitAll()
-				.antMatchers("/files").permitAll()
-				.antMatchers("/files/**").permitAll()
-				.antMatchers("/api/search*").permitAll()
-				.antMatchers("/api/test/all").permitAll()
-				.antMatchers("/api/**").hasAuthority(ERole.ROLE_ADMIN.toString().toUpperCase())
-				.anyRequest().authenticated();
+		http.cors().and()
+			.csrf().disable()
+			.exceptionHandling().authenticationEntryPoint(authenticationEntryPoint).and()//Authen-xác thực
+			.exceptionHandling().accessDeniedHandler(accessDeniedHandler()).and()//Forbidden-kiểm tra truy cập
+			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+			.authorizeRequests().antMatchers(HttpMethod.GET, "/", "/*.html", "/favicon.ico", "/**/*.html", "/**/*.css", "/**/*.js").permitAll()
+			.antMatchers("/api/auth/**").permitAll()
+			.antMatchers("/upload").permitAll()
+			.antMatchers("/files").permitAll()
+			.antMatchers("/files/**").permitAll()
+			.antMatchers("/api/search*").permitAll()
+			.antMatchers("/api/test/all").permitAll()
+			.antMatchers("/api/**").hasAuthority(ERole.ROLE_ADMIN.toString().toUpperCase())
+			.anyRequest().authenticated();
 
 		// Thêm một lớp Filter kiểm tra jwt
 		http.addFilterBefore(authenticationTokenFilter(), UsernamePasswordAuthenticationFilter.class);
