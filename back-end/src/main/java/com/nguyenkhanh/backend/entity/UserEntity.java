@@ -15,7 +15,7 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotBlank;
 
-import com.nguyenkhanh.backend.validation.CustomEmailValidate;
+import com.nguyenkhanh.backend.validation.EmailFormat;
 
 @Entity
 @Table(name = "users", uniqueConstraints = { @UniqueConstraint(columnNames = "username"),
@@ -29,7 +29,7 @@ public class UserEntity extends Common {
 	private String username;
 
 	@NotBlank
-	@CustomEmailValidate
+	@EmailFormat
 	private String email;
 
 	@NotBlank

@@ -16,11 +16,11 @@ import com.google.gson.Gson;
 
 public class CustomAccessDeniedHandler implements AccessDeniedHandler {
 	private static final Logger logger = LoggerFactory.getLogger(AccessDeniedHandler.class);
-	
+
 	@Override
 	public void handle(HttpServletRequest request, HttpServletResponse response,
 			AccessDeniedException accessDeniedException) throws IOException, ServletException {
-		logger.error("Unauthorized error: {}", accessDeniedException.getMessage());
+		logger.error("Access error: {}", accessDeniedException.getMessage());
 
 		ResponseMessage error = new ResponseMessage();
 		error.setTimestamp(new Date());

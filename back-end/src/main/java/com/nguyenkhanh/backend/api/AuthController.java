@@ -65,7 +65,7 @@ public class AuthController {
 
 	@Autowired
 	JwtTokenUtils jwtTokenUtils;
-	
+
 	@Autowired
 	RegisterVerifyServiceImpl registerVerifyServiceImpl;
 

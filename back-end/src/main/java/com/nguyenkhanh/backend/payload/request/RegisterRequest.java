@@ -2,13 +2,12 @@ package com.nguyenkhanh.backend.payload.request;
 
 import java.util.Set;
 
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import com.nguyenkhanh.backend.entity.Common;
-import com.nguyenkhanh.backend.validation.CustomEmailValidate;
+import com.nguyenkhanh.backend.validation.EmailFormat;
 
 public class RegisterRequest extends Common {
 	@NotBlank(message = "{Custom.UserName.NotBlank}")
@@ -17,8 +16,8 @@ public class RegisterRequest extends Common {
 
 	// ----------------------------------------------------------------------------------------------
 	@NotNull(message = "{Custom.Email.NotBlank}")
-	@CustomEmailValidate(message = "{Custom.Email.Validate}")
-	@Email(message = "{Custom.Email.Validate}")
+	@EmailFormat(message = "{Custom.Email.Validate}")
+//	@Email(message = "{Custom.Email.Validate}")
 	private String email;
 
 	// ----------------------------------------------------------------------------------------------

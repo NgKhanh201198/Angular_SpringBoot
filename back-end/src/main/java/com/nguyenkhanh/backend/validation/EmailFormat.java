@@ -10,12 +10,13 @@ import javax.validation.Constraint;
 import javax.validation.Payload;
 
 @Documented
-@Constraint(validatedBy = CustomEmailValidator.class)
-@Target({ ElementType.FIELD, ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.ANNOTATION_TYPE,
-		ElementType.PARAMETER, ElementType.TYPE_USE })
+@Constraint(validatedBy = EmailFormatValidator.class)
+@Target({ ElementType.TYPE, ElementType.FIELD })
 @Retention(RetentionPolicy.RUNTIME)
-public @interface CustomEmailValidate {
+public @interface EmailFormat {
 	String message() default "Wrong email format";
+
+	String pattern() default "";
 
 	Class<?>[] groups() default {};
 

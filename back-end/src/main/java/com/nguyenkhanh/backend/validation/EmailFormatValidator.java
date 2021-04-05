@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-public class CustomEmailValidator implements ConstraintValidator<CustomEmailValidate, String> {
+public class EmailFormatValidator implements ConstraintValidator<EmailFormat, String> {
 	public static final Pattern VALID_EMAIL_ADDRESS_REGEX = Pattern
 			.compile("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}$");
 
