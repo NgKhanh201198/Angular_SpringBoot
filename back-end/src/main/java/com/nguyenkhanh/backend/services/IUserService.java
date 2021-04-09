@@ -6,7 +6,7 @@ import com.nguyenkhanh.backend.dto.UserDTO;
 import com.nguyenkhanh.backend.entity.UserEntity;
 
 public interface IUserService {
-	public void delete(long[] id);
+	public void deletes(long[] id);
 
 	public void deleteAndRestore(long id);
 

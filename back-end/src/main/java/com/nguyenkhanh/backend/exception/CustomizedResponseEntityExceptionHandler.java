@@ -27,8 +27,8 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
 		return new ResponseEntity<>(message, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
-	@ExceptionHandler({ ResourceNotFoundException.class })
-	public final ResponseEntity<?> handleResourceNotFoundException(ResourceNotFoundException exception,
+	@ExceptionHandler({ NotFoundException.class })
+	public final ResponseEntity<?> handleResourceNotFoundException(NotFoundException exception,
 			WebRequest request) {
 		ResponseMessage message = new ResponseMessage(new Date(), HttpStatus.NOT_FOUND.value(), "Not Found",
 				exception.getMessage(), request.getDescription(false));

@@ -124,7 +124,6 @@ public class AuthController {
 						RoleEntity userRole = roleService.roleFindByName(ERole.ROLE_USER)
 								.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
 						roles.add(userRole);
-
 					}
 				});
 			}
@@ -189,8 +188,8 @@ public class AuthController {
 			List<String> roles = userDetailsImpl.getAuthorities().stream().map(role -> role.getAuthority())
 					.collect(Collectors.toList());
 
-			return ResponseEntity.ok(new JwtResponse(jwt, userDetailsImpl.getId(), userDetailsImpl.getUsername(),
-					userDetailsImpl.getEmail(), roles, userDetailsImpl.isEnabled()));
+			return ResponseEntity.ok(new JwtResponse(userDetailsImpl.getId(), userDetailsImpl.getUsername(),
+					userDetailsImpl.getEmail(), roles, userDetailsImpl.isEnabled(), jwt));
 
 		}
 //		catch (AuthenticationException ex) {

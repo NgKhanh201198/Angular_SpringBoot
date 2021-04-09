@@ -200,7 +200,7 @@ public class APIController {
 	@PutMapping("/user")
 	public ResponseEntity<?> deleteUsers(@Valid @RequestBody long[] ids) {
 		try {
-			userService.delete(ids);
+			userService.deletes(ids);
 			return ResponseEntity.ok(new ResponseMessage(new Date(), HttpStatus.OK.value(), "Deleted successfully!"));
 		} catch (Exception e) {
 			ResponseMessage message = new ResponseMessage(new Date(), HttpStatus.NOT_FOUND.value(), "Not Found",

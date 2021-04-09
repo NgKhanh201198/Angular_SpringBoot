@@ -13,9 +13,6 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
-import javax.validation.constraints.NotBlank;
-
-import com.nguyenkhanh.backend.validation.EmailFormat;
 
 @Entity
 @Table(name = "users", uniqueConstraints = { @UniqueConstraint(columnNames = "username"),
@@ -25,14 +22,10 @@ public class UserEntity extends Common {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@NotBlank
 	private String username;
 
-	@NotBlank
-	@EmailFormat
 	private String email;
 
-	@NotBlank
 	private String password;
 
 	private Boolean status;

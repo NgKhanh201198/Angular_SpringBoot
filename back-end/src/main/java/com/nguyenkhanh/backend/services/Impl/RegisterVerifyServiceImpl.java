@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.nguyenkhanh.backend.entity.RegisterVerify;
 import com.nguyenkhanh.backend.entity.UserEntity;
-import com.nguyenkhanh.backend.exception.ResourceNotFoundException;
+import com.nguyenkhanh.backend.exception.NotFoundException;
 import com.nguyenkhanh.backend.repository.RegisterVerifyRepository;
 import com.nguyenkhanh.backend.services.IRegisterVerifyService;
 import com.nguyenkhanh.backend.services.SendEmailService;
@@ -54,7 +54,7 @@ public class RegisterVerifyServiceImpl implements IRegisterVerifyService {
 
 	public String updateTokenExpired(String token) {
 		RegisterVerify registerVerifyOld = registerVerifyRepository.findByToken(token)
-				.orElseThrow(() -> new ResourceNotFoundException("Token not found"));
+				.orElseThrow(() -> new NotFoundException("Token not found"));
 
 		UserEntity user = registerVerifyOld.getUser();
 

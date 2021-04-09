@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.nguyenkhanh.backend.exception.ResourceNotFoundException;
+import com.nguyenkhanh.backend.exception.NotFoundException;
 import com.nguyenkhanh.backend.services.IFilesService;
 
 @Service
@@ -58,7 +58,7 @@ public class FilesServiceImpl implements IFilesService {
 			if (resource.exists() || resource.isReadable()) {
 				return resource;
 			} else {
-				throw new ResourceNotFoundException("File not found " + filename);
+				throw new NotFoundException("File not found " + filename);
 			}
 		} catch (MalformedURLException e) {
 			throw new RuntimeException("Error: " + e.getMessage());

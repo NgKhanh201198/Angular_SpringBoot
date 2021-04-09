@@ -16,7 +16,7 @@ import com.nguyenkhanh.backend.converter.UserConverter;
 import com.nguyenkhanh.backend.dto.UserDTO;
 import com.nguyenkhanh.backend.entity.RegisterVerify;
 import com.nguyenkhanh.backend.entity.UserEntity;
-import com.nguyenkhanh.backend.exception.ResourceNotFoundException;
+import com.nguyenkhanh.backend.exception.NotFoundException;
 import com.nguyenkhanh.backend.repository.UserRepository;
 import com.nguyenkhanh.backend.services.IUserService;
 import com.nguyenkhanh.backend.services.SendEmailService;
@@ -42,7 +42,21 @@ public class UserServiceImpl implements IUserService {
 	private String BASE_URL;
 
 	@Override
-	public void delete(long[] ids) {
+	public void save(UserEntity user) {
+		userRepository.save(user);
+
+		String token = UUID.randomUUID().toString();
+
+		RegisterVerify registerVerify = new RegisterVerify(user, token, LocalDateTime.now().plusSeconds(DATE_EXPIED),
+				false);
+		registerVerifyService.save(registerVerify);
+
+		String link = BASE_URL + "api/auth/confirm?token=" + token;
+		sendEmailService.sendEMail(user.getEmail(), buildEmail(user.getUsername(), link));
+	}
+
+	@Override
+	public void deletes(long[] ids) {
 		for (long id : ids) {
 			UserEntity oldUser = userRepository.getOne(id);
 			oldUser.setStatus(false);
@@ -77,20 +91,6 @@ public class UserServiceImpl implements IUserService {
 	}
 
 	@Override
-	public void save(UserEntity user) {
-		userRepository.save(user);
-
-		String token = UUID.randomUUID().toString();
-
-		RegisterVerify registerVerify = new RegisterVerify(user, token, LocalDateTime.now().plusSeconds(DATE_EXPIED),
-				false);
-		registerVerifyService.save(registerVerify);
-
-		String link = BASE_URL + "api/auth/confirm?token=" + token;
-		sendEmailService.sendEMail(user.getEmail(), buildEmail(user.getUsername(), link));
-	}
-
-	@Override
 	public void update(UserEntity user) {
 		userRepository.save(user);
 	}
@@ -111,13 +111,21 @@ public class UserServiceImpl implements IUserService {
 		return userRepository.existsById(id);
 	}
 
+	@Override
+	public List<UserEntity> searchUser(String keyword) {
+		if (keyword != null) {
+			return userRepository.search(keyword);
+		}
+		return userRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
+	}
+
 	@Transactional
 	public String confirmToken(String token) throws TimeoutException {
 		String success = "";
 		String login = "";
 
 		RegisterVerify registerVerify = registerVerifyService.getToken(token)
-				.orElseThrow(() -> new ResourceNotFoundException("Token not found"));
+				.orElseThrow(() -> new NotFoundException("Token not found"));
 		LocalDateTime dateExpied = registerVerify.getDateExpied();
 		String link = BASE_URL + "api/auth/RegisterTokenExpired?token=" + token;
 
@@ -160,14 +168,6 @@ public class UserServiceImpl implements IUserService {
 				+ "\" style=\"display:block;padding:15px 40px;text-decoration:none;font-family:'Segoe UI',Arial,sans-serif;font-weight: 100;background:linear-gradient(90deg,#3a9bed 25%,#235ecf 100%);border-radius:5px;text-transform:uppercase;letter-spacing:5px;color:#ffffff;width:40%;line-height:25px;text-align:center;margin:auto;font-size:18px;\">Verify mail</a>\r\n"
 				+ "        <p style=\"font-family: 'Segoe UI',Arial,sans-serif;font-size: 16px;font-weight: 400;padding-top: 20px;\"><b>Note:</b> Link will expire in 10 minutes!</p>\r\n"
 				+ "</div>";
-	}
-
-	@Override
-	public List<UserEntity> searchUser(String keyword) {
-		if (keyword != null) {
-			return userRepository.search(keyword);
-		}
-		return userRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
 	}
 
 }
