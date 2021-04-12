@@ -1,9 +1,12 @@
 package com.nguyenkhanh.backend.api;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -19,38 +22,47 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 
-import com.nguyenkhanh.backend.entity.File;
+import com.nguyenkhanh.backend.entity.Files;
+import com.nguyenkhanh.backend.exception.BadRequestException;
 import com.nguyenkhanh.backend.exception.ResponseMessage;
 import com.nguyenkhanh.backend.services.Impl.FilesServiceImpl;
 
 @CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
 @RestController
 public class FilesController {
-//	private static final Logger logger = LoggerFactory.getLogger(FilesController.class);
 
 	@Autowired
 	FilesServiceImpl storageService;
 
 	@PostMapping("/upload")
-	public ResponseEntity<ResponseMessage> uploadFile(@RequestParam("file") MultipartFile file) {
+	public ResponseEntity<?> uploadFiles(@RequestParam("files") MultipartFile[] files) {
 		String message = "";
 		try {
-			storageService.save(file);
+			String[] allowedMimeTypes = new String[] { "image/gif", "image/png", "image/jpeg" };
+			List<String> fileNames = new ArrayList<>();
+			Arrays.asList(files).stream().forEach(file -> {
+				if (!ArrayUtils.contains(allowedMimeTypes, file.getContentType().toLowerCase())) {
+					throw new BadRequestException("Invalid file, valid files include: jpg, png, gif");
+				}
 
-			message = "Uploaded the file successfully: " + file.getOriginalFilename();
+				storageService.save(file);
+				fileNames.add(file.getOriginalFilename());
+
+			});
+			String strFileNames = fileNames.stream().map(Object::toString).collect(Collectors.joining(", "));
+			message = "Uploaded the file successfully: " + strFileNames;
 			return ResponseEntity.status(HttpStatus.OK)
 					.body(new ResponseMessage(new Date(), HttpStatus.OK.value(), message));
-		} catch (Exception e) {
-			message = "Filename '" + file.getOriginalFilename()
-					+ "' already exists. Please rename the file and try again!";
-			return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage(new Date(),
-					HttpStatus.EXPECTATION_FAILED.value(), "Expectation Failed", message));
+		} catch (BadRequestException ex) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage(new Date(),
+					HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.name(), ex.getMessage()));
 		}
 	}
 
 	@GetMapping("/files/{filename:.+}")
 	public ResponseEntity<Resource> getFile(@PathVariable String filename) {
 		Resource file = storageService.load(filename);
+		System.out.println(file);
 		return ResponseEntity.ok().contentType(MediaType.parseMediaType("image/jpeg"))
 				.header(HttpHeaders.CONTENT_DISPOSITION, "Content-Disposition: inlines")
 //				.header(HttpHeaders.CONTENT_DISPOSITION, "Content-Disposition: attachment; filename=\"" + file.getFilename() + "\"")
@@ -58,8 +70,8 @@ public class FilesController {
 	}
 
 	@GetMapping("/files")
-	public ResponseEntity<List<File>> getListFiles() {
-		List<File> Files = storageService.loadAll().map(file -> {
+	public ResponseEntity<List<Files>> getListFiles() {
+		List<Files> Files = storageService.loadAll().map(file -> {
 			// get filename
 			String filename = file.getFileName().toString();
 
@@ -67,7 +79,7 @@ public class FilesController {
 			// fromMethodName(Class<?> controllerType, String methodName, Object... args)
 			String url = MvcUriComponentsBuilder
 					.fromMethodName(FilesController.class, "getFile", file.getFileName().toString()).build().toString();
-			return new File(filename, url);
+			return new Files(filename, url);
 		}).collect(Collectors.toList());
 
 		return ResponseEntity.status(HttpStatus.OK).body(Files);

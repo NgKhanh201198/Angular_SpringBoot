@@ -1,10 +1,10 @@
 package com.nguyenkhanh.backend.entity;
 
-public class File {
+public class Files {
 	private String name;
 	private String url;
 
-	public File(String name, String url) {
+	public Files(String name, String url) {
 	    this.name = name;
 	    this.url = url;
 	  }

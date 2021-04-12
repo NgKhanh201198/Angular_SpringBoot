@@ -69,7 +69,7 @@ public class AuthController {
 	@Autowired
 	RegisterVerifyServiceImpl registerVerifyServiceImpl;
 
-	@GetMapping(path = "confirm")
+	@GetMapping(path = "/confirm")
 	public String confirm(@RequestParam("token") String token) throws TimeoutException {
 		return userService.confirmToken(token);
 	}
