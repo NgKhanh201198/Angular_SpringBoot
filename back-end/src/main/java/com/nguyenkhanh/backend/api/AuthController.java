@@ -44,7 +44,7 @@ import com.nguyenkhanh.backend.services.Impl.RegisterVerifyServiceImpl;
 import com.nguyenkhanh.backend.services.Impl.RoleServiceImpl;
 import com.nguyenkhanh.backend.services.Impl.UserServiceImpl;
 
-@CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {

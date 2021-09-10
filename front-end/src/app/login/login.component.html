@@ -24,7 +24,9 @@
                         </button>
                         <div *ngIf="error" class="alert alert-danger mt-3 mb-0">{{error=='Unknown Error'?"Can not connect to server":error}}</div>
                     </form>
-                    <div class="text-right mt-3">Bạn chưa có tài khoản? <a [routerLink]="['/register']">Đăng ký</a></div>
+                    <div class="text-right mt-3">
+                        Bạn chưa có tài khoản? <a [routerLink]="['/register']">Đăng ký</a>
+                    </div>
                 </div>
             </div>
         </div>

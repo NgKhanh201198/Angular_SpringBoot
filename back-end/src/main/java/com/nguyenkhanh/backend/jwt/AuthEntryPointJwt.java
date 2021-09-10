@@ -18,29 +18,26 @@ import com.nguyenkhanh.backend.exception.ResponseMessage;
 
 @Component
 public final class AuthEntryPointJwt implements AuthenticationEntryPoint {
+    private static final Logger logger = LoggerFactory.getLogger(AuthEntryPointJwt.class);
 
-	private static final Logger logger = LoggerFactory.getLogger(AuthEntryPointJwt.class);
+    @Override
+    public void commence(HttpServletRequest request, HttpServletResponse response,
+                         AuthenticationException authException) throws IOException, ServletException {
+        logger.error("Unauthorized error: {}", authException.getMessage());
 
-	@Override
-	public void commence(HttpServletRequest request, HttpServletResponse response,
-			AuthenticationException authException) throws IOException, ServletException {
+        ResponseMessage error = new ResponseMessage();
+        error.setTimestamp(new Date());
+        error.setstatusCode(HttpServletResponse.SC_UNAUTHORIZED);
+        error.setError("Unauthorized");
+        error.setMessage("Sorry, you need full authentication to access this resource");
+        error.setPath(request.getRequestURI());
+        Gson gson = new Gson();
+        String errorMessage = gson.toJson(error);
 
-		logger.error("Unauthorized error: {}", authException.getMessage());
-
-		ResponseMessage error = new ResponseMessage();
-		error.setTimestamp(new Date());
-		error.setstatusCode(HttpServletResponse.SC_UNAUTHORIZED);
-		error.setError("Unauthorized");
-		error.setMessage("Sorry, you need full authentication to access this resource");
-		error.setPath(request.getRequestURI());
-		Gson gson = new Gson();
-		String errorMessage = gson.toJson(error);
-
-		response.resetBuffer();
-		response.setContentType("application/json");
-		response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-		response.getWriter().write(errorMessage);
-		response.flushBuffer();
-	}
-
+        response.resetBuffer();
+        response.setContentType("application/json");
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.getWriter().write(errorMessage);
+        response.flushBuffer();
+    }
 }

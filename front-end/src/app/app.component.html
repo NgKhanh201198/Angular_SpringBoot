@@ -1,5 +1,3 @@
-<!-- nav -->
-<!-- <nav class="navbar navbar-expand navbar-dark flex-column flex-md-row bg-dark" *ngIf="currentUser"> -->
 <nav class="navbar navbar-expand navbar-dark flex-column flex-md-row bg-dark">
     <div class="navbar-nav-scroll">
         <ul class="navbar-nav bd-navbar-nav flex-row">
@@ -31,6 +29,6 @@
 
 <!-- main app container -->
 <div>
-    <mat-progress-bar *ngIf="show" mode="indeterminate"></mat-progress-bar>
-    <router-outlet *ngIf="!show"></router-outlet>
+<!--    <mat-progress-bar *ngIf="show" mode="indeterminate"></mat-progress-bar>-->
+    <router-outlet></router-outlet>
 </div>

@@ -5,6 +5,6 @@ export class CurrentUser {
     username: string;
     email: string;
     roles: Role[];
-    accessToken?: string;
+    token?: string;
     typeToken: string;
 }

@@ -1,5 +1,5 @@
 import { HttpEventType, HttpResponse } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { AppService } from 'src/app/_services/app.service';
 import { LogService } from 'src/app/_services/log.service';
 
@@ -9,6 +9,8 @@ import { LogService } from 'src/app/_services/log.service';
     styleUrls: ['./upload-file.component.css']
 })
 export class UploadFileComponent implements OnInit {
+    
+    @ViewChild('uploadFile') myInputVariable: ElementRef;
     imgURL: any;
     imgURLUpload: any;
     public message: string;
@@ -16,6 +18,7 @@ export class UploadFileComponent implements OnInit {
     success = '';
     error = '';
     fileList: Array<any> = [];
+    reader = new FileReader();
 
     constructor(
         private appService: AppService,
@@ -31,29 +34,31 @@ export class UploadFileComponent implements OnInit {
 
     onSelectFile(event) {
         if (event.target.files.length > 0) {
-            // const file = event.target.files[0];
             this.currentFile = event.target.files[0];
-            var mimeType = event.target.files[0].type;
-            if (mimeType.match(/image\/*/) == null) {
-                this.message = "Only images are supported.";
-                return;
-            }
+            // var mimeType = event.target.files[0].type;
+            // if (mimeType.match(/image\/*/) == null) {
+            //     this.message = "Only images are supported.";
+            //     return;
+            // }
 
             // Đọc file image hiển thị ra màn hình
-            var reader = new FileReader();
-            reader.readAsDataURL(this.currentFile);
-            reader.onload = (_event) => {
-                this.imgURL = reader.result;
+
+            this.reader.readAsDataURL(this.currentFile);
+            this.reader.onload = (_event) => {
+                this.imgURL = this.reader.result;
             }
         }
     }
+
 
     onUpload() {
         this.appService.upload(this.currentFile)
             .subscribe({
                 next: (res) => {
-                    this.imgURLUpload = this.imgURL
+                    console.log(res.message);
 
+
+                    this.imgURLUpload = this.imgURL
                     this.error = '';
                     this.success = res.message;
                 },
@@ -63,6 +68,8 @@ export class UploadFileComponent implements OnInit {
                 }
             })
             , setTimeout(() => {
+                this.myInputVariable.nativeElement.value = "";
+                this.imgURL = '';
                 this.success = '';
             }, 3000);;
     }

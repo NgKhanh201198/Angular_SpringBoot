@@ -1,9 +1,9 @@
-import { Component } from '@angular/core';
-import { AuthenticationService } from './_services/authentication.service';
-import { Router } from '@angular/router';
-import { CurrentUser } from './_models/current-user';
-import { Role } from './_models/role';
-import { OnInit } from '@angular/core';
+import {Component} from '@angular/core';
+import {AuthenticationService} from './_services/authentication.service';
+import {Router} from '@angular/router';
+import {CurrentUser} from './_models/current-user';
+import {Role} from './_models/role';
+import {OnInit} from '@angular/core';
 
 @Component({
     selector: 'app-root',
@@ -11,15 +11,17 @@ import { OnInit } from '@angular/core';
     styleUrls: ['./app.component.css']
 })
 
-export class AppComponent implements OnInit{
+export class AppComponent implements OnInit {
     currentUser: CurrentUser;
-    show = false;
+    show = true;
 
     constructor(private authenticationService: AuthenticationService, private router: Router) {
-        this.authenticationService.currentUser.subscribe(x => { this.currentUser = x });
+        this.authenticationService.currentUser.subscribe(x => {
+            this.currentUser = x;
+        });
         setTimeout(() => {
-            this.show = false;
-        }, 2000);
+            // this.show = false;
+        }, 1500);
     }
 
     ngOnInit(): void {
@@ -31,13 +33,14 @@ export class AppComponent implements OnInit{
         this.router.navigate(['/login']);
     }
 
-    //------------  phân quyền button
+    //------ phân quyền button ----------
     get isAdmin() {
         for (let index = 0; index < this.currentUser.roles.length; index++) {
-            if (this.currentUser && this.currentUser.roles[index] === Role.ADMIN)
+            if (this.currentUser && this.currentUser.roles[index] === Role.ADMIN) {
                 return true;
+            }
         }
         return false;
     }
-    
+
 }

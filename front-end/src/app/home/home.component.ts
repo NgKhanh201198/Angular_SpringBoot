@@ -1,8 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { first, delay } from 'rxjs/operators';
-import { CurrentUser } from '../_models/current-user';
-import { AuthenticationService } from '../_services/authentication.service';
-import { UserService } from '../_services/user.service';
+import {Component, OnInit} from '@angular/core';
+import {CurrentUser} from '../_models/current-user';
+import {AuthenticationService} from '../_services/authentication.service';
+import {CookieService} from 'ngx-cookie-service';
 
 @Component({
     selector: 'app-home',
@@ -11,22 +10,31 @@ import { UserService } from '../_services/user.service';
 })
 
 export class HomeComponent implements OnInit {
-    loading: Boolean = false;
+    loading = false;
     currentUser: CurrentUser;
     userFromApi: CurrentUser;
 
     constructor(
-        private authenticationService: AuthenticationService
+        private authenticationService: AuthenticationService,
+        private cookieService: CookieService
     ) {
         this.currentUser = this.authenticationService.currentUserValue;
-    };
+    }
 
-    ngOnInit() {
+    ngOnInit(): void {
         this.loading = true;
         setTimeout(() => {
             this.loading = false;
             this.userFromApi = this.currentUser;
         }, 800);
 
-    };
+        // test cookies
+        const expiredDate = new Date();
+        expiredDate.setDate(expiredDate.getDate() + 1);
+        this.cookieService.set('new', 'việt nam', expiredDate);
+
+        console.log(('new'));
+        console.log(this.cookieService.get('new'));
+        console.log(this.cookieService.get('1P_JAR'));
+    }
 }

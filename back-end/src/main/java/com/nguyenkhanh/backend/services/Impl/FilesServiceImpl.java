@@ -5,7 +5,6 @@ import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.UUID;
 import java.util.stream.Stream;
 
 import org.springframework.core.io.Resource;
@@ -22,16 +21,9 @@ public class FilesServiceImpl implements IFilesService {
 	private final Path root = Paths.get("uploads/");
 
 	@Override
-	public void save(MultipartFile file) {
+	public void save(MultipartFile file, String uuidImage) {
 		try {
-
-			// copy(**, uploads\filename)
-			String fileName = file.getOriginalFilename().substring(file.getOriginalFilename().length() - 4,
-					file.getOriginalFilename().length());
-
-			String uuid = UUID.randomUUID().toString() + fileName.toLowerCase();
-
-			Files.copy(file.getInputStream(), this.root.resolve(uuid));
+			Files.copy(file.getInputStream(), this.root.resolve(uuidImage));
 		} catch (Exception e) {
 			throw new RuntimeException("Could not store the file. Error: " + e.getMessage());
 		}

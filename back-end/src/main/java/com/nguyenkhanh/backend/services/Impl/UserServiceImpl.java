@@ -54,6 +54,11 @@ public class UserServiceImpl implements IUserService {
 		String link = BASE_URL + "api/auth/confirm?token=" + token;
 		sendEmailService.sendEMail(user.getEmail(), buildEmail(user.getUsername(), link));
 	}
+	
+	@Override
+	public void update(UserEntity user) {
+		userRepository.save(user);
+	}
 
 	@Override
 	public void deletes(long[] ids) {
@@ -90,10 +95,7 @@ public class UserServiceImpl implements IUserService {
 		return userRepository.existsByEmail(email);
 	}
 
-	@Override
-	public void update(UserEntity user) {
-		userRepository.save(user);
-	}
+	
 
 	@Override
 	public List<UserEntity> userFindAll() {

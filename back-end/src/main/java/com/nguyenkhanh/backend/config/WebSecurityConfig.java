@@ -30,59 +30,58 @@ import com.nguyenkhanh.backend.services.UserDetailsServiceImpl;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-	@Autowired
-	UserDetailsServiceImpl userDetailsServiceImpl;
+    @Autowired
+    private UserDetailsServiceImpl userDetailsServiceImpl;
 
-	@Autowired
-	private AuthEntryPointJwt authenticationEntryPoint;
+    @Autowired
+    private AuthEntryPointJwt authenticationEntryPoint;
 
-	@Bean
-	public AuthTokenFilter authenticationTokenFilter() {
-		return new AuthTokenFilter();
-	}
+    @Bean
+    public AuthTokenFilter authenticationTokenFilter() {
+        return new AuthTokenFilter();
+    }
 
-	@Bean
-	public PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
-	@Bean
-	@Override
-	public AuthenticationManager authenticationManager() throws Exception {
-		return super.authenticationManager();
-	}
+    @Bean
+    public AccessDeniedHandler accessDeniedHandler() {
+        return new CustomAccessDeniedHandler();
+    }
 
-	@Bean
-	public AccessDeniedHandler accessDeniedHandler() {
-		return new CustomAccessDeniedHandler();
-	}
+    @Bean
+    @Override
+    public AuthenticationManager authenticationManager() throws Exception {
+        return super.authenticationManager();
+    }
 
-	@Override
-	public void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(userDetailsServiceImpl).passwordEncoder(passwordEncoder());
-	}
+    @Override
+    public void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userDetailsServiceImpl).passwordEncoder(passwordEncoder());
+    }
 
-	List<String> roles = new ArrayList<String>(Arrays.asList("ROLE_USER", "ROLE_MODERATOR", "ROLE_ADMIN"));
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.cors().and()
+                .csrf().disable()
+                .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint).and()//Authen-xác thực
+                .exceptionHandling().accessDeniedHandler(accessDeniedHandler()).and()//Forbidden-kiểm tra truy cập
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+                .authorizeRequests()
+                .antMatchers(HttpMethod.GET, "/", "/*.html", "/favicon.ico", "/**/*.html", "/**/*.css", "/**/*.js").permitAll()
+                .antMatchers("/api/auth/**").permitAll()
+                .antMatchers("/upload").permitAll()
+                .antMatchers("/files").permitAll()
+                .antMatchers("/files/**").permitAll()
+                .antMatchers("/api/search*").permitAll()
+                .antMatchers("/api/test/all").permitAll()
+                .antMatchers("/api/**").hasAuthority(ERole.ROLE_ADMIN.toString().toUpperCase())
+                .anyRequest().authenticated();
 
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
-		http.cors().and()
-			.csrf().disable()
-			.exceptionHandling().authenticationEntryPoint(authenticationEntryPoint).and()//Authen-xác thực
-			.exceptionHandling().accessDeniedHandler(accessDeniedHandler()).and()//Forbidden-kiểm tra truy cập
-			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-			.authorizeRequests().antMatchers(HttpMethod.GET, "/", "/*.html", "/favicon.ico", "/**/*.html", "/**/*.css", "/**/*.js").permitAll()
-			.antMatchers("/api/auth/**").permitAll()
-			.antMatchers("/upload").permitAll()
-			.antMatchers("/files").permitAll()
-			.antMatchers("/files/**").permitAll()
-			.antMatchers("/api/search*").permitAll()
-			.antMatchers("/api/test/all").permitAll()
-			.antMatchers("/api/**").hasAuthority(ERole.ROLE_ADMIN.toString().toUpperCase())
-			.anyRequest().authenticated();
-
-		// Thêm một lớp Filter kiểm tra jwt
-		http.addFilterBefore(authenticationTokenFilter(), UsernamePasswordAuthenticationFilter.class);
-	}
+        // Thêm một lớp Filter kiểm tra jwt
+        http.addFilterBefore(authenticationTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+    }
 
 }

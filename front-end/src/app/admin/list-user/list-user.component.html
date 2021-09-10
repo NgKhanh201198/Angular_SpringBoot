@@ -2,156 +2,224 @@
     <app-navbar></app-navbar>
     <div class="content-wrapper">
         <div class="container-fluid">
+
+            <table class="table">
+                <thead>
+                <tr>
+                    <th style="width:5%" scope="col">1</th>
+                    <th style="width:5%" scope="col">2</th>
+                    <th style="width:5%" scope="col">3</th>
+                    <th style="width:5%" scope="col">4</th>
+                    <th style="width:5%" scope="col">5</th>
+                    <th style="width:5%" scope="col">6</th>
+                    <th style="width:5%" scope="col">7</th>
+                </tr>
+                </thead>
+
+                <tbody *ngFor="let elementParent of test.items">
+                <tr>
+                    <ng-container *ngFor="let elementChirld of elementParent.item; index as i; first as isFirst">
+                        <th *ngIf="isFirst">
+                            <div>
+                                <p>Main: {{elementChirld.main}}</p>
+                                <p>Sub: {{elementChirld.sub}}</p>
+                            </div>
+                        </th>
+                        <td *ngIf="!isFirst">
+                            <div>
+                                <p>Main: {{elementChirld.main}}</p>
+                                <p>Sub: {{elementChirld.sub}}</p>
+                            </div>
+                        </td>
+                    </ng-container>
+                </tr>
+                </tbody>
+
+            </table>
+            <ng-container *ngTemplateOutlet="demo"></ng-container>
+            <ng-template #demo>
+               <h1>Ok con dê</h1>
+            </ng-template>
+
+
             <!-- UserActive -->
-            <div class="card mt-3" *ngIf="active">
-                <div class="card-header p-0">
-                    <div class="row">
-                        <div class="col-sm-9">
-                            <h1 class="text-center text-info mt-3 mb-3 my-title">Danh sách tài khoản</h1>
-                        </div>
-                        <div class="col-sm-2">
-                            <a matTooltip="create" [matTooltipPosition]="'left'" [routerLink]="['/admin','addUser']" class="btn btn-outline-success mt-3 mr-2"><i class="fas fa-plus"></i></a>
-                            <a matTooltip="delete" [matTooltipPosition]="'right'" *ngIf="active" [routerLink]="['/admin','listUser']" (click)="deleteAllData()" class="btn-delete btn btn-outline-danger mt-3"><i class="fas fa-trash"></i></a>
-                        </div>
-                        <div class="col-sm-1"> </div>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th style="width:5%" scope="col">
-                                    <mat-checkbox *ngIf="active" [color]="color" [checked]="allComplete" [indeterminate]="someComplete()" (change)="setAll($event.checked)"></mat-checkbox>
-                                </th>
-                                <!-- <th style="width:5%" scope="col">#</th> -->
-                                <th style="width:15%" scope="col">User name</th>
-                                <th style="width:15%" scope="col">Email</th>
-                                <th style="width:15%" scope="col">Role</th>
-                                <!-- <th style="width:10%" scope="col">Creator</th> -->
-                                <th style="width:15%" scope="col">
-                                    <div class="row">
-                                        <div class="col-sm-6" class="status">Status</div>
-                                        <div class="col-sm-6">
-                                            <mat-select [(value)]="selected" (selectionChange)="change($event.value)">
-                                                <mat-option *ngFor="let status of status" [value]="status.value">{{status.viewValue}}</mat-option>
-                                            </mat-select>
-                                        </div>
-                                    </div>
-                                </th>
-                                <th style="width:10%" scope="col">Active</th>
-                            </tr>
-                        </thead>
-                        <tbody *ngFor="let item of collectionActive | paginate: { itemsPerPage: 5, currentPage: pageActive , totalLength:totalLengthActive}">
-                            <tr *ngIf="active">
-                                <th scope="row">
-                                    <mat-checkbox [color]="color" [(ngModel)]="item.isSelected" (ngModelChange)="updateAllComplete()"></mat-checkbox>
-                                </th>
-                                <td>{{item.username}}</td>
-                                <td>{{item.email}}</td>
-                                <td>
-                                    <ul *ngFor="let role of item.roles">
-                                        <p> {{(role.name==Role.ADMIN)?'Quản trị viên':((role.name==Role.MODERATOR)?'Người điều hành':(role.name==Role.USER)?'Người dùng':'')}} </p>
-                                    </ul>
-                                </td>
-                                <!-- <td>{{item.createdBy}}</td> -->
-                                <td>{{(item.status)?'Hoạt động':'Không hoạt động'}}</td>
-                                <td>
-                                    <a [routerLink]="['/admin','updateUser',item.id]" class="btn-edit btn btn-outline-info mr-2" matTooltip="update" [matTooltipPosition]="'left'"><i class="fas fa-pen "></i></a>
-                                    <a [routerLink]="['/admin','listUser']" *ngIf="(item.username !== 'admin')" (click)="deleteData(item.id)" class="btn-delete btn btn-outline-danger" matTooltip="delete"><i class="fas fa-times"></i></a>
-                                </td>
-                            </tr>
-                        </tbody>
-                        <tbody *ngFor="let item of collectionInActive">
-                            <tr *ngIf="!active">
-                                <th scope="row"></th>
-                                <td>{{item.username}}</td>
-                                <td>{{item.email}}</td>
-                                <td>
-                                    <ul *ngFor="let role of item.roles">
-                                        <p> {{(role.name==Role.ADMIN)?'Quản trị viên':((role.name==Role.MODERATOR)?'Người điều hành':(role.name==Role.USER)?'Người dùng':'')}} </p>
-                                    </ul>
-                                </td>
-                                <!-- <td>{{item.createdBy}}</td> -->
-                                <td>{{item.status?'Không hoạt động':'Không hoạt động'}}</td>
-                                <td>
-                                    <a *ngIf="active" [routerLink]="['/admin','updateUser',item.id]" class="btn-edit btn btn-outline-info mr-2" matTooltip="update"><i class="fas fa-pen "></i></a>
-                                    <a [routerLink]="['/admin','listUser']" (click)="restoreData(item.id)" class="btn-delete btn btn-outline-primary" matTooltip="restore"><i class="fas fa-undo-alt"></i></a>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="card-footer pb-0 pt-3">
-                    <pagination-controls class="text-center" *ngIf="active" (pageChange)="pageActive = $event"></pagination-controls>
-                </div>
-            </div>
+            <!--            <div class="card mt-3" *ngIf="active">-->
+            <!--                <div class="card-header p-0">-->
+            <!--                    <div class="row">-->
+            <!--                        <div class="col-sm-9">-->
+            <!--                            <h1 class="text-center text-info mt-3 mb-3 my-title">Danh sách tài khoản</h1>-->
+            <!--                        </div>-->
+            <!--                        <div class="col-sm-2">-->
+            <!--                            <a matTooltip="create" [matTooltipPosition]="'left'" [routerLink]="['/admin','addUser']"-->
+            <!--                               class="btn btn-outline-success mt-3 mr-2"><i class="fas fa-plus"></i></a>-->
+            <!--                            <a matTooltip="delete" [matTooltipPosition]="'right'" *ngIf="active"-->
+            <!--                               [routerLink]="['/admin','listUser']" (click)="deleteAllData()"-->
+            <!--                               class="btn-delete btn btn-outline-danger mt-3"><i class="fas fa-trash"></i></a>-->
+            <!--                        </div>-->
+            <!--                        <div class="col-sm-1"></div>-->
+            <!--                    </div>-->
+            <!--                </div>-->
+            <!--                <div class="card-body">-->
+            <!--                    <table class="table">-->
+            <!--                        <thead>-->
+            <!--                        <tr>-->
+            <!--                            <th style="width:5%" scope="col">-->
+            <!--                                <mat-checkbox *ngIf="active" [color]="color" [checked]="allComplete"-->
+            <!--                                              [indeterminate]="someComplete()"-->
+            <!--                                              (change)="setAll($event.checked)"></mat-checkbox>-->
+            <!--                            </th>-->
+            <!--                            &lt;!&ndash; <th style="width:5%" scope="col">#</th> &ndash;&gt;-->
+            <!--                            <th style="width:15%" scope="col">User name</th>-->
+            <!--                            <th style="width:15%" scope="col">Email</th>-->
+            <!--                            <th style="width:15%" scope="col">Role</th>-->
+            <!--                            &lt;!&ndash; <th style="width:10%" scope="col">Creator</th> &ndash;&gt;-->
+            <!--                            <th style="width:15%" scope="col">-->
+            <!--                                <div class="row">-->
+            <!--                                    <div class="col-sm-6" class="status">Status</div>-->
+            <!--                                    <div class="col-sm-6">-->
+            <!--                                        <mat-select [(value)]="selected" (selectionChange)="change($event.value)">-->
+            <!--                                            <mat-option *ngFor="let status of status"-->
+            <!--                                                        [value]="status.value">{{status.viewValue}}</mat-option>-->
+            <!--                                        </mat-select>-->
+            <!--                                    </div>-->
+            <!--                                </div>-->
+            <!--                            </th>-->
+            <!--                            <th style="width:10%" scope="col">Active</th>-->
+            <!--                        </tr>-->
+            <!--                        </thead>-->
+            <!--                        <tbody-->
+            <!--                            *ngFor="let item of collectionActive | paginate: { itemsPerPage: 5, currentPage: pageActive , totalLength:totalLengthActive}">-->
+            <!--                        <tr *ngIf="active">-->
+            <!--                            <td scope="row">-->
+            <!--                                <mat-checkbox [color]="color" [(ngModel)]="item.isSelected"-->
+            <!--                                              (ngModelChange)="updateAllComplete()"></mat-checkbox>-->
+            <!--                            </td>-->
+            <!--                            <td>{{item.username}}-{{item.id}}</td>-->
+            <!--                            <td>{{item.email}}</td>-->
+            <!--                            <td>-->
+            <!--                                <ul *ngFor="let role of item.roles">-->
+            <!--                                    <p> {{(role.name == Role.ADMIN) ? 'Quản trị viên' : ((role.name == Role.MODERATOR) ? 'Người điều hành' : (role.name == Role.USER) ? 'Người dùng' : '')}} </p>-->
+            <!--                                </ul>-->
+            <!--                            </td>-->
+            <!--                            &lt;!&ndash; <td>{{item.createdBy}}</td> &ndash;&gt;-->
+            <!--                            <td>{{(item.status) ? 'Hoạt động' : 'Không hoạt động'}}</td>-->
+            <!--                            <td>-->
+            <!--                                <a [routerLink]="['/admin','updateUser',item.id]"-->
+            <!--                                   class="btn-edit btn btn-outline-info mr-2" matTooltip="update"-->
+            <!--                                   [matTooltipPosition]="'left'"><i class="fas fa-pen "></i></a>-->
+            <!--                                <a [routerLink]="['/admin','listUser']" *ngIf="(item.username !== 'admin')"-->
+            <!--                                   (click)="deleteData(item.id)" class="btn-delete btn btn-outline-danger"-->
+            <!--                                   matTooltip="delete"><i class="fas fa-times"></i></a>-->
+            <!--                            </td>-->
+            <!--                        </tr>-->
+            <!--                        </tbody>-->
+            <!--                        <tbody *ngFor="let item of collectionInActive">-->
+            <!--                        <tr *ngIf="!active">-->
+            <!--                            <th scope="row"></th>-->
+            <!--                            <td>{{item.username}}</td>-->
+            <!--                            <td>{{item.email}}</td>-->
+            <!--                            <td>-->
+            <!--                                <ul *ngFor="let role of item.roles">-->
+            <!--                                    <p> {{(role.name == Role.ADMIN) ? 'Quản trị viên' : ((role.name == Role.MODERATOR) ? 'Người điều hành' : (role.name == Role.USER) ? 'Người dùng' : '')}} </p>-->
+            <!--                                </ul>-->
+            <!--                            </td>-->
+            <!--                            &lt;!&ndash; <td>{{item.createdBy}}</td> &ndash;&gt;-->
+            <!--                            <td>{{item.status ? 'Không hoạt động' : 'Không hoạt động'}}</td>-->
+            <!--                            <td>-->
+            <!--                                <a *ngIf="active" [routerLink]="['/admin','updateUser',item.id]"-->
+            <!--                                   class="btn-edit btn btn-outline-info mr-2" matTooltip="update"><i-->
+            <!--                                    class="fas fa-pen "></i></a>-->
+            <!--                                <a [routerLink]="['/admin','listUser']" (click)="restoreData(item.id)"-->
+            <!--                                   class="btn-delete btn btn-outline-primary" matTooltip="restore"><i-->
+            <!--                                    class="fas fa-undo-alt"></i></a>-->
+            <!--                            </td>-->
+            <!--                        </tr>-->
+            <!--                        </tbody>-->
+            <!--                    </table>-->
+            <!--                </div>-->
+            <!--                <div class="card-footer pb-0 pt-3">-->
+            <!--                    <pagination-controls class="text-center" *ngIf="active"-->
+            <!--                                         (pageChange)="pageActive = $event"></pagination-controls>-->
+            <!--                </div>-->
+            <!--            </div>-->
 
             <!-- UserInActive -->
-            <div class="card mt-3" *ngIf="!active">
-                <div class="card-header p-0">
-                    <div class="row">
-                        <div class="col-sm-9">
-                            <h1 class="text-center text-info mt-3 mb-3 my-title">Danh sách tài khoản</h1>
-                        </div>
-                        <div class="col-sm-2">
-                            <a matTooltip="create" [matTooltipPosition]="'left'" [routerLink]="['/admin','addUser']" class="btn btn-outline-success mt-3 mr-2"><i class="fas fa-plus"></i></a>
-                            <a matTooltip="delete" [matTooltipPosition]="'right'" *ngIf="active" [routerLink]="['/admin','listUser']" (click)="deleteAllData()" class="btn-delete btn btn-outline-danger mt-3"><i class="fas fa-trash"></i></a>
-                        </div>
-                        <div class="col-sm-1"> </div>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th style="width:5%" scope="col">
-                                    <mat-checkbox *ngIf="!active" [disabled]="true" [color]="color" [checked]="allComplete" [indeterminate]="someComplete()" (change)="setAll($event.checked)"></mat-checkbox>
-                                </th>
-                                <!-- <th style="width:5%" scope="col">#</th> -->
-                                <th style="width:15%" scope="col">User name</th>
-                                <th style="width:15%" scope="col">Email</th>
-                                <th style="width:15%" scope="col">Role</th>
-                                <th style="width:10%" scope="col">Creator</th>
-                                <th style="width:15%" scope="col">
-                                    <div class="row">
-                                        <div class="col-sm-4" class="status">Status</div>
-                                        <div class="col-sm-8">
-                                            <mat-select [(value)]="selected" (selectionChange)="change($event.value)">
-                                                <mat-option *ngFor="let status of status" [value]="status.value">{{status.viewValue}} </mat-option>
-                                            </mat-select>
-                                        </div>
-                                    </div>
-                                </th>
-                                <th style="width:10%" scope="col">Active</th>
-                            </tr>
-                        </thead>
-                        <tbody *ngFor="let item of collectionInActive | paginate: { itemsPerPage: 5, currentPage: pageInActive , totalLength:totalLengthInActive}">
-                            <tr>
-                                <th scope="row"></th>
-                                <td>{{item.username}}</td>
-                                <td>{{item.email}}</td>
-                                <td>
-                                    <ul *ngFor="let role of item.roles">
-                                        <p> {{(role.name==Role.ADMIN)?'Quản trị viên':((role.name==Role.MODERATOR)?'Người điều hành':(role.name==Role.USER)?'Người dùng':'')}} </p>
-                                    </ul>
-                                </td>
-                                <td>{{item.createdBy}}</td>
-                                <td>{{item.status?'Không hoạt động':'Không hoạt động'}}</td>
-                                <td>
-                                    <a *ngIf="active" [routerLink]="['/admin','updateUser',item.id]" class="btn-edit btn btn-outline-info mr-2" matTooltip="update"><i class="fas fa-pen "></i></a>
-                                    <a [routerLink]="['/admin','listUser']" (click)="restoreData(item.id)" class="btn-delete btn btn-outline-primary" matTooltip="restore"><i class="fas fa-undo-alt"></i></a>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="card-footer pb-0 pt-3">
-                    <pagination-controls class="text-center" (pageChange)="pageInActive = $event"></pagination-controls>
-                </div>
+            <!--            <div class="card mt-3" *ngIf="!active">-->
+            <!--                <div class="card-header p-0">-->
+            <!--                    <div class="row">-->
+            <!--                        <div class="col-sm-9">-->
+            <!--                            <h1 class="text-center text-info mt-3 mb-3 my-title">Danh sách tài khoản</h1>-->
+            <!--                        </div>-->
+            <!--                        <div class="col-sm-2">-->
+            <!--                            <a matTooltip="create" [matTooltipPosition]="'left'" [routerLink]="['/admin','addUser']"-->
+            <!--                               class="btn btn-outline-success mt-3 mr-2"><i class="fas fa-plus"></i></a>-->
+            <!--                            <a matTooltip="delete" [matTooltipPosition]="'right'" *ngIf="active"-->
+            <!--                               [routerLink]="['/admin','listUser']" (click)="deleteAllData()"-->
+            <!--                               class="btn-delete btn btn-outline-danger mt-3"><i class="fas fa-trash"></i></a>-->
+            <!--                        </div>-->
+            <!--                        <div class="col-sm-1"></div>-->
+            <!--                    </div>-->
+            <!--                </div>-->
+            <!--                <div class="card-body">-->
+            <!--                    <table class="table">-->
+            <!--                        <thead>-->
+            <!--                        <tr>-->
+            <!--                            <th style="width:5%" scope="col">-->
+            <!--                                <mat-checkbox *ngIf="!active" [disabled]="true" [color]="color" [checked]="allComplete"-->
+            <!--                                              [indeterminate]="someComplete()"-->
+            <!--                                              (change)="setAll($event.checked)"></mat-checkbox>-->
+            <!--                            </th>-->
+            <!--                            &lt;!&ndash; <th style="width:5%" scope="col">#</th> &ndash;&gt;-->
+            <!--                            <th style="width:15%" scope="col">User name</th>-->
+            <!--                            <th style="width:15%" scope="col">Email</th>-->
+            <!--                            <th style="width:15%" scope="col">Role</th>-->
+            <!--                            <th style="width:10%" scope="col">Creator</th>-->
+            <!--                            <th style="width:15%" scope="col">-->
+            <!--                                <div class="row">-->
+            <!--                                    <div class="col-sm-4" class="status">Status</div>-->
+            <!--                                    <div class="col-sm-8">-->
+            <!--                                        <mat-select [(value)]="selected" (selectionChange)="change($event.value)">-->
+            <!--                                            <mat-option *ngFor="let status of status"-->
+            <!--                                                        [value]="status.value">{{status.viewValue}} </mat-option>-->
+            <!--                                        </mat-select>-->
+            <!--                                    </div>-->
+            <!--                                </div>-->
+            <!--                            </th>-->
+            <!--                            <th style="width:10%" scope="col">Active</th>-->
+            <!--                        </tr>-->
+            <!--                        </thead>-->
+            <!--                        <tbody-->
+            <!--                            *ngFor="let item of collectionInActive | paginate: { itemsPerPage: 5, currentPage: pageInActive , totalLength:totalLengthInActive}">-->
+            <!--                        <tr>-->
+            <!--                            <th scope="row"></th>-->
+            <!--                            <td>{{item.username}}</td>-->
+            <!--                            <td>{{item.email}}</td>-->
+            <!--                            <td>-->
+            <!--                                <ul *ngFor="let role of item.roles">-->
+            <!--                                    <p> {{(role.name == Role.ADMIN) ? 'Quản trị viên' : ((role.name == Role.MODERATOR) ? 'Người điều hành' : (role.name == Role.USER) ? 'Người dùng' : '')}} </p>-->
+            <!--                                </ul>-->
+            <!--                            </td>-->
+            <!--                            <td>{{item.createdBy}}</td>-->
+            <!--                            <td>{{item.status ? 'Không hoạt động' : 'Không hoạt động'}}</td>-->
+            <!--                            <td>-->
+            <!--                                <a *ngIf="active" [routerLink]="['/admin','updateUser',item.id]"-->
+            <!--                                   class="btn-edit btn btn-outline-info mr-2" matTooltip="update"><i-->
+            <!--                                    class="fas fa-pen "></i></a>-->
+            <!--                                <a [routerLink]="['/admin','listUser']" (click)="restoreData(item.id)"-->
+            <!--                                   class="btn-delete btn btn-outline-primary" matTooltip="restore"><i-->
+            <!--                                    class="fas fa-undo-alt"></i></a>-->
+            <!--                            </td>-->
+            <!--                        </tr>-->
+            <!--                        </tbody>-->
+            <!--                    </table>-->
+            <!--                </div>-->
+            <!--                <div class="card-footer pb-0 pt-3">-->
+            <!--                    <pagination-controls class="text-center" (pageChange)="pageInActive = $event"></pagination-controls>-->
+            <!--                </div>-->
+            <!--            </div>-->
+            <div [ngClass]="{ 'hienra': success }" class="alert tb"><i class="fas fa-check"
+                                                                       style="color: green; font-size: 1.25em;"></i>&nbsp;{{success}}
             </div>
-
-
-            <div [ngClass]="{ 'hienra': success }" class="alert tb"><i class="fas fa-check" style="color: green; font-size: 1.25em;"></i>&nbsp;{{success}}</div>
         </div>
     </div>
 </div>

@@ -33,7 +33,7 @@ export class UpdateUserComponent {
         { name: 'Người dùng', value: 'user' }
     ];
 
-    formUpdateData: FormGroup = this.formBuilder.group({
+    formUpdateData = this.formBuilder.group({
         username: ['', [Validators.required]],
         email: ['', [Validators.required, emailValidator()]],
         roles: [[''], [Validators.required]]

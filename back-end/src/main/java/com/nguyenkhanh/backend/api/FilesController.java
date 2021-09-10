@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -27,26 +28,48 @@ import com.nguyenkhanh.backend.exception.BadRequestException;
 import com.nguyenkhanh.backend.exception.ResponseMessage;
 import com.nguyenkhanh.backend.services.Impl.FilesServiceImpl;
 
-@CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 public class FilesController {
 
 	@Autowired
 	FilesServiceImpl storageService;
 
+	// upload one file
+	// @PostMapping("/upload")
+	// public ResponseEntity<ResponseMessage> uploadFile(@RequestParam("file") MultipartFile file) {
+	// 	String message = "";
+	// 	try {
+	// 		storageService.save(file);
+
+	// 		message = "Uploaded the file successfully: " + file.getOriginalFilename();
+	// 		return ResponseEntity.status(HttpStatus.OK)
+	// 				.body(new ResponseMessage(new Date(), HttpStatus.OK.value(), message));
+	// 	} catch (Exception e) {
+	// 		message = "Filename '" + file.getOriginalFilename()
+	// 				+ "' already exists. Please rename the file and try again!";
+	// 		return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage(new Date(),
+	// 				HttpStatus.EXPECTATION_FAILED.value(), "Expectation Failed", message));
+	// 	}
+	// }
+
+	// upload multiple file
 	@PostMapping("/upload")
-	public ResponseEntity<?> uploadFiles(@RequestParam("files") MultipartFile[] files) {
+	public ResponseEntity<?> uploadFiles(@RequestParam("file") MultipartFile file) {
 		String message = "";
 		try {
 			String[] allowedMimeTypes = new String[] { "image/gif", "image/png", "image/jpeg" };
 			List<String> fileNames = new ArrayList<>();
-			Arrays.asList(files).stream().forEach(file -> {
-				if (!ArrayUtils.contains(allowedMimeTypes, file.getContentType().toLowerCase())) {
+			Arrays.asList(file).stream().forEach(fileItem -> {
+				if (!ArrayUtils.contains(allowedMimeTypes, fileItem.getContentType().toLowerCase())) {
 					throw new BadRequestException("Invalid file, valid files include: jpg, png, gif");
 				}
+				String fileName = fileItem.getOriginalFilename().substring(fileItem.getOriginalFilename().length() - 4,
+						fileItem.getOriginalFilename().length());
 
-				storageService.save(file);
-				fileNames.add(file.getOriginalFilename());
+				String uuidImage = UUID.randomUUID().toString().replaceAll("-", "") + fileName.toLowerCase();
+				storageService.save(fileItem, uuidImage);
+				fileNames.add(fileItem.getOriginalFilename());
 
 			});
 			String strFileNames = fileNames.stream().map(Object::toString).collect(Collectors.joining(", "));
@@ -64,8 +87,8 @@ public class FilesController {
 		Resource file = storageService.load(filename);
 		System.out.println(file);
 		return ResponseEntity.ok().contentType(MediaType.parseMediaType("image/jpeg"))
-				.header(HttpHeaders.CONTENT_DISPOSITION, "Content-Disposition: inlines")
-//				.header(HttpHeaders.CONTENT_DISPOSITION, "Content-Disposition: attachment; filename=\"" + file.getFilename() + "\"")
+				.header(HttpHeaders.CONTENT_DISPOSITION, "Content-Disposition: inlines")//show
+				// .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"")//download
 				.body(file);
 	}
 

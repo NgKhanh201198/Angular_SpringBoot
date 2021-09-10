@@ -14,7 +14,7 @@ const routes: Routes = [
     {
         path: 'listUser',
         component: ListUserComponent,
-        runGuardsAndResolvers: 'always'
+        // runGuardsAndResolvers: 'always'
     },
     {
         path: 'updateUser/:id',

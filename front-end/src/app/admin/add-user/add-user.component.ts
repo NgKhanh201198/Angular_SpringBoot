@@ -50,6 +50,7 @@ export class AddUserComponent {
 
     //Invalid error message
     get formValid() { return this.formData.controls; }
+
     getUserErrorMessage(): string {
         if (this.formValid.username.errors.required) {
             return 'Username is required';
@@ -85,10 +86,10 @@ export class AddUserComponent {
             .subscribe({
                 next: (result) => {
                     this.loading = false,
-                        this.submitted = false,
-                        this.error = '';
+                    this.submitted = false,
+                    this.error = '';
                     this.myForm.resetForm();
-                    this.success = result.message
+                    this.success = result.message;
                 },
                 error: (error) => {
                     this.error = error;

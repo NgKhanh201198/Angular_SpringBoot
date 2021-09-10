@@ -69,6 +69,7 @@ public class RegisterVerifyServiceImpl implements IRegisterVerifyService {
 		sendEmailService.sendEMail(user.getEmail(), userServiceImpl.buildEmail(user.getUsername(), link));
 
 		registerVerifyRepository.save(registerVerify);
+		
 		return "<body style=\"margin: 0;\">\r\n"
 				+ "    <div style=\"background-color: #212429;width: 100%;height: 663px;\">\r\n"
 				+ "        <div style=\"width: 80%;text-align: center;font-size: 35px;line-height: 78px;letter-spacing: 0.2em;padding-top: 100px;margin: 0 auto;color: #c8cee2;font-family: 'Segoe UI',Arial,sans-serif;text-transform: uppercase;text-shadow: 0px 4px 4px rgb(0 0 0 / 25%);\">Register successfully.</div>\r\n"
