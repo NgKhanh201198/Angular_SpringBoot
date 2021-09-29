@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -33,7 +34,7 @@ import com.nguyenkhanh.backend.services.Impl.FilesServiceImpl;
 public class FilesController {
 
 	@Autowired
-	FilesServiceImpl storageService;
+	FilesServiceImpl filesServiceImpl;
 
 	// upload one file
 	// @PostMapping("/upload")
@@ -68,7 +69,7 @@ public class FilesController {
 						fileItem.getOriginalFilename().length());
 
 				String uuidImage = UUID.randomUUID().toString().replaceAll("-", "") + fileName.toLowerCase();
-				storageService.save(fileItem, uuidImage);
+				filesServiceImpl.save(fileItem, uuidImage);
 				fileNames.add(fileItem.getOriginalFilename());
 
 			});
@@ -84,7 +85,7 @@ public class FilesController {
 
 	@GetMapping("/files/{filename:.+}")
 	public ResponseEntity<Resource> getFile(@PathVariable String filename) {
-		Resource file = storageService.load(filename);
+		Resource file = filesServiceImpl.load(filename);
 		System.out.println(file);
 		return ResponseEntity.ok().contentType(MediaType.parseMediaType("image/jpeg"))
 				.header(HttpHeaders.CONTENT_DISPOSITION, "Content-Disposition: inlines")//show
@@ -94,7 +95,7 @@ public class FilesController {
 
 	@GetMapping("/files")
 	public ResponseEntity<List<Files>> getListFiles() {
-		List<Files> Files = storageService.loadAll().map(file -> {
+		List<Files> Files = filesServiceImpl.loadAll().map(file -> {
 			// get filename
 			String filename = file.getFileName().toString();
 

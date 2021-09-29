@@ -29,5 +29,5 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
 	@Transactional
 	@Query("SELECT u FROM UserEntity u WHERE CONCAT(u.username, u.email) LIKE LOWER(CONCAT('%', concat(?1),'%'))")
-	public List<UserEntity> search(String keyword);
+	List<UserEntity> search(String keyword);
 }
